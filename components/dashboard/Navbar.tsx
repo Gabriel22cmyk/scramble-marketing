@@ -21,11 +21,11 @@ export default function Navbar() {
   return (
     <header
       style={{
-        background: "rgba(255, 255, 255, 0.75)",
+        background: "rgba(255, 255, 255, 0.95)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
-        boxShadow: "0 1px 20px rgba(0, 0, 0, 0.04)",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+        boxShadow: "0 1px 12px rgba(0, 0, 0, 0.04)",
       }}
       className="fixed top-0 left-0 right-0 z-50"
     >

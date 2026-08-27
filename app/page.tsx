@@ -26,18 +26,24 @@ function EmptyDashboard() {
     <>
       {/* Hero */}
       <section
-        className="pt-32 pb-24 text-center relative overflow-hidden"
+        className="text-center relative"
         style={{
           background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 25%, #e0f2fe 50%, #ede9fe 75%, #e8f4f8 100%)",
           backgroundSize: "200% 200%",
           animation: "pearlShift 12s ease-in-out infinite",
+          paddingTop: "180px",
+          paddingBottom: "96px",
+          overflow: "hidden",
         }}
       >
-        {/* Radial overlays */}
+        {/* Radial overlays — decorative only, isolated so it never clips text */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="pointer-events-none"
           style={{
+            position: "absolute",
+            inset: 0,
             background: "radial-gradient(ellipse at 25% 50%, rgba(8, 145, 178, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 75% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%)",
+            zIndex: 0,
           }}
         />
 
