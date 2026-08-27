@@ -73,19 +73,23 @@ export default function SettingsPage() {
 
   return (
     <>
-      {/* Header */}
+      {/* Header — centered hero */}
       <section
-        className="pt-28 pb-12 px-6"
-        style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}
+        className="text-center"
+        style={{
+          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 50%, #e0f2fe 100%)",
+          paddingTop: "180px",
+          paddingBottom: "64px",
+        }}
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto px-6">
           <h1
-            className="text-3xl font-extrabold mb-2"
+            className="text-4xl font-extrabold mb-3"
             style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
           >
             Settings
           </h1>
-          <p className="text-base" style={{ color: "#64748b" }}>
+          <p className="text-lg" style={{ color: "#64748b" }}>
             Manage API connections and integrations
           </p>
         </div>

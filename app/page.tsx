@@ -204,13 +204,20 @@ function DashboardContent() {
 
   return (
     <>
-      {/* Header section */}
-      <section className="pt-28 pb-12 px-6" style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}>
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-extrabold mb-2" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>
+      {/* Header section — centered hero */}
+      <section
+        className="text-center"
+        style={{
+          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 50%, #e0f2fe 100%)",
+          paddingTop: "180px",
+          paddingBottom: "64px",
+        }}
+      >
+        <div className="max-w-2xl mx-auto px-6">
+          <h1 className="text-4xl font-extrabold mb-3" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>
             Dashboard
           </h1>
-          <p className="text-base" style={{ color: "#64748b" }}>
+          <p className="text-lg" style={{ color: "#64748b" }}>
             {activeClients.length} active client{activeClients.length !== 1 ? "s" : ""} · {allAlerts.length} alert{allAlerts.length !== 1 ? "s" : ""}
           </p>
         </div>

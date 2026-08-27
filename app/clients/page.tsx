@@ -55,32 +55,34 @@ export default function ClientsPage() {
 
   return (
     <>
-      {/* Header */}
+      {/* Header — centered hero, matches site-wide pattern */}
       <section
-        className="pt-28 pb-12 px-6"
-        style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}
+        className="text-center relative"
+        style={{
+          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 50%, #e0f2fe 100%)",
+          paddingTop: "180px",
+          paddingBottom: "64px",
+        }}
       >
-        <div className="max-w-5xl mx-auto flex items-end justify-between">
-          <div>
-            <h1
-              className="text-3xl font-extrabold mb-2"
-              style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
-            >
-              Clients
-            </h1>
-            <p className="text-base" style={{ color: "#64748b" }}>
-              {clients.length} total · {activeCount} active
-            </p>
-          </div>
+        <div className="max-w-2xl mx-auto px-6">
+          <h1
+            className="text-4xl font-extrabold mb-3"
+            style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
+          >
+            Clients
+          </h1>
+          <p className="text-lg mb-8" style={{ color: "#64748b" }}>
+            {clients.length} total · {activeCount} active
+          </p>
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-white font-semibold text-base transition-all hover:-translate-y-0.5"
             style={{
               background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
               boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
             }}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             Add Client
           </button>
         </div>
