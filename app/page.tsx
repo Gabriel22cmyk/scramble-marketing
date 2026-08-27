@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Suspense } from "react";
 import Link from "next/link";
 import {
@@ -65,12 +67,12 @@ function EmptyDashboard() {
 
           <h1
             className="text-5xl font-extrabold mb-5"
-            style={{ color: "#1e293b", letterSpacing: "-1px", lineHeight: 1.1 }}
+            style={{ color: "#1e293b", letterSpacing: "-1px", lineHeight: 1.1, textAlign: "center" }}
           >
             Your Marketing{" "}
             <span style={{ color: "#0891b2" }}>Operations Hub</span>
           </h1>
-          <p className="text-xl mb-10 max-w-xl mx-auto" style={{ color: "#64748b", lineHeight: 1.7 }}>
+          <p className="text-xl mb-10 max-w-xl mx-auto" style={{ color: "#64748b", lineHeight: 1.7, textAlign: "center" }}>
             Add clients, connect APIs, and let Scramble handle SEO tracking, reporting, and campaign management.
           </p>
 
@@ -104,17 +106,17 @@ function EmptyDashboard() {
         </div>
       </section>
 
-      {/* What You Get */}
+      {/* What You Need */}
       <section
-        className="py-20"
+        className="py-20 text-center"
         style={{ background: "linear-gradient(180deg, #f8fdfe 0%, #f0f9fc 50%, #f8fdfe 100%)" }}
       >
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "#1e293b" }}>
+            <h2 className="text-3xl font-bold mb-3" style={{ color: "#1e293b", textAlign: "center" }}>
               Everything You Need
             </h2>
-            <p className="text-lg" style={{ color: "#64748b", maxWidth: 550, margin: "0 auto" }}>
+            <p className="text-lg" style={{ color: "#64748b", maxWidth: 550, margin: "0 auto", textAlign: "center" }}>
               Track SEO, manage clients, and generate reports — all in one place
             </p>
           </div>
@@ -154,6 +156,7 @@ function EmptyDashboard() {
                   border: "1px solid rgba(0, 0, 0, 0.06)",
                   borderRadius: "20px",
                   boxShadow: "0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04)",
+                  textAlign: "center",
                 }}
               >
                 <div
@@ -165,10 +168,10 @@ function EmptyDashboard() {
                 >
                   {item.icon}
                 </div>
-                <h3 className="text-base font-bold mb-2" style={{ color: "#1e293b" }}>
+                <h3 className="text-base font-bold mb-2" style={{ color: "#1e293b", textAlign: "center" }}>
                   {item.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#64748b" }}>
+                <p className="text-sm leading-relaxed" style={{ color: "#64748b", textAlign: "center" }}>
                   {item.desc}
                 </p>
                 {!item.active && (
@@ -214,10 +217,10 @@ function DashboardContent() {
         }}
       >
         <div className="max-w-2xl mx-auto px-6">
-          <h1 className="text-4xl font-extrabold mb-3" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>
+          <h1 className="text-4xl font-extrabold mb-3" style={{ color: "#1e293b", letterSpacing: "-0.5px", textAlign: "center" }}>
             Dashboard
           </h1>
-          <p className="text-lg" style={{ color: "#64748b" }}>
+          <p className="text-lg" style={{ color: "#64748b", textAlign: "center" }}>
             {activeClients.length} active client{activeClients.length !== 1 ? "s" : ""} · {allAlerts.length} alert{allAlerts.length !== 1 ? "s" : ""}
           </p>
         </div>
@@ -240,6 +243,7 @@ function DashboardContent() {
                   background: "white",
                   border: "1px solid rgba(0,0,0,0.06)",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                  textAlign: "center",
                 }}
               >
                 <p className="text-sm font-semibold mb-1" style={{ color: "#64748b" }}>{stat.label}</p>
