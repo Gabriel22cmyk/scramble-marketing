@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
-  BarChart3,
-  FileText,
   Settings,
   Zap,
   ChevronRight,
@@ -16,8 +14,6 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clients", icon: Users },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/reports", label: "Reports", icon: FileText },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -63,20 +59,6 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
-
-      {/* Footer */}
-      <div className="px-3 py-3 border-t border-bg-border">
-        <div className="flex items-center gap-2.5 px-3 py-2">
-          <div className="w-7 h-7 rounded-full bg-gradient-brand flex items-center justify-center text-white text-xs font-bold">
-            C
-          </div>
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-text truncate">Cayde</p>
-            <p className="text-[10px] text-text-muted truncate">SEO Agent</p>
-          </div>
-          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
-        </div>
-      </div>
     </aside>
   );
 }

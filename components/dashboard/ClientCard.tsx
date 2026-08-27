@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink, TrendingUp, Calendar } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Client } from "@/lib/types";
-import { getPackageLabel, formatDate } from "@/lib/utils";
+import { getPackageLabel } from "@/lib/utils";
 import StatusDot from "@/components/ui/StatusDot";
 import Badge from "@/components/ui/Badge";
 
@@ -77,34 +77,10 @@ export default function ClientCard({ client }: ClientCardProps) {
               <Badge variant={getPackageBadgeVariant(client.package)}>
                 {getPackageLabel(client.package)}
               </Badge>
-
-              <div className="flex items-center gap-1 text-xs text-text-dim">
-                <Calendar className="w-3 h-3" />
-                <span>Since {formatDate(client.startDate)}</span>
-              </div>
             </div>
           </div>
         </div>
-
-        {/* Integration status */}
-        <div className="mt-4 pt-4 border-t border-bg-border flex items-center gap-4">
-          <IntegrationStatus label="Search Console" connected={!!client.siteUrl} />
-          <IntegrationStatus label="Analytics" connected={!!client.analyticsPropertyId} />
-          <IntegrationStatus label="Google Ads" connected={!!client.adsCustomerId} />
-        </div>
       </div>
     </Link>
-  );
-}
-
-function IntegrationStatus({ label, connected }: { label: string; connected: boolean }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <StatusDot
-        status={connected ? "active" : "unknown"}
-        size="sm"
-      />
-      <span className="text-xs text-text-dim">{label}</span>
-    </div>
   );
 }

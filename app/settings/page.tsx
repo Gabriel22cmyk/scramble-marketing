@@ -7,9 +7,7 @@ import {
   CheckCircle,
   XCircle,
   HelpCircle,
-  ChevronRight,
   Bell,
-  Shield,
   Database,
   Zap,
 } from "lucide-react";
@@ -37,11 +35,6 @@ const CONNECTION_INFO: Record<string, { icon: string; description: string }> = {
   "Google Analytics Admin": { icon: "📊", description: "Property & account management" },
   "Google Analytics Data": { icon: "📈", description: "Traffic, sessions & user data" },
   "Google Ads": { icon: "💰", description: "Campaign spend & conversions" },
-  "Google Sheets": { icon: "📋", description: "Client data & reporting spreadsheets" },
-  "Google Drive": { icon: "📁", description: "Reports, assets & documents" },
-  "Google Docs": { icon: "📄", description: "Reports & content documents" },
-  "Google Mail": { icon: "✉️", description: "Client communication & alerts" },
-  "Google Calendar": { icon: "📅", description: "Campaign scheduling & reminders" },
 };
 
 function StatusIcon({ status }: { status: "ok" | "error" | "unknown" }) {
@@ -75,7 +68,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <Topbar title="Settings" subtitle="Configuration & connection management" />
+      <Topbar title="Settings" subtitle="Configuration & API connections" />
 
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-4xl mx-auto space-y-6">
@@ -85,8 +78,8 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
                 <div>
-                  <h2 className="section-title">Maton API Connections</h2>
-                  <p className="section-subtitle">labseme21@icloud.com · All Google services</p>
+                  <h2 className="section-title">API Connections</h2>
+                  <p className="section-subtitle">Connect your Google account to track client performance</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -101,7 +94,7 @@ export default function SettingsPage() {
                   className="btn-secondary flex items-center gap-2"
                 >
                   <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-                  {checked ? "Re-check" : "Check Health"}
+                  {checked ? "Re-check" : "Check Status"}
                 </button>
               </div>
             </div>
@@ -115,11 +108,6 @@ export default function SettingsPage() {
                   { service: "Google Analytics Admin", connectionId: "410a223a-23b0-4d7e-b6f7-ccb63e53882d", status: "unknown" as const },
                   { service: "Google Analytics Data", connectionId: "97508d12-ad42-44ec-94ff-e00e9d329ef4", status: "unknown" as const },
                   { service: "Google Ads", connectionId: "5fc30d82-81e2-404d-87d0-603392590300", status: "unknown" as const },
-                  { service: "Google Sheets", connectionId: "f0113f6d-da60-40ab-9cc5-1be352e77ae6", status: "unknown" as const },
-                  { service: "Google Drive", connectionId: "0248269d-78bd-4909-93ed-2f37efb11e86", status: "unknown" as const },
-                  { service: "Google Docs", connectionId: "ec784bc5-7362-45f5-9666-31638a0ae087", status: "unknown" as const },
-                  { service: "Google Mail", connectionId: "c680583d-f679-4a7d-8a90-64a70c615061", status: "unknown" as const },
-                  { service: "Google Calendar", connectionId: "0c3188c3-95c9-4113-919c-dc382fde3f00", status: "unknown" as const },
                 ]).map((svc) => {
                   const info = CONNECTION_INFO[svc.service];
                   return (
@@ -137,7 +125,6 @@ export default function SettingsPage() {
                           )}
                         </div>
                         <p className="text-xs text-text-muted">{info?.description}</p>
-                        <p className="text-xs text-text-dim font-mono mt-0.5">{svc.connectionId}</p>
                         {svc.message && (
                           <p className="text-xs text-danger mt-1 line-clamp-1">{svc.message}</p>
                         )}
@@ -162,7 +149,7 @@ export default function SettingsPage() {
             )}
           </div>
 
-          {/* Notification Settings */}
+          {/* Notifications */}
           <div className="card">
             <div className="flex items-center gap-2 mb-4">
               <Bell className="w-5 h-5 text-accent" />
@@ -171,10 +158,10 @@ export default function SettingsPage() {
 
             <div className="space-y-3">
               {[
-                { label: "Weekly digest", description: "Summary of all client activity every Monday", enabled: true },
-                { label: "Ranking alerts", description: "Notify when a keyword drops more than 5 positions", enabled: true },
-                { label: "Traffic drops", description: "Alert when organic traffic drops >20% week-on-week", enabled: false },
-                { label: "Report ready", description: "Notify when a monthly report is generated", enabled: true },
+                { label: "Weekly digest", description: "Summary of client activity every Monday", enabled: true },
+                { label: "Ranking alerts", description: "When keywords drop more than 5 positions", enabled: true },
+                { label: "Traffic drops", description: "When organic traffic drops >20% week-on-week", enabled: false },
+                { label: "Report ready", description: "When a monthly report is generated", enabled: true },
               ].map((notif) => (
                 <div key={notif.label} className="flex items-start justify-between p-3 rounded-lg bg-bg-tertiary">
                   <div>
@@ -208,40 +195,11 @@ export default function SettingsPage() {
               <SettingsRow
                 label="Client data location"
                 description="data/clients.json (local file store)"
-                action="Edit"
               />
               <SettingsRow
                 label="Export all client data"
                 description="Download a JSON backup of all client records"
-                action="Export"
               />
-              <SettingsRow
-                label="Migrate to Supabase"
-                description="Move client data to a hosted database"
-                action="Configure"
-                badge="Coming Soon"
-              />
-            </div>
-          </div>
-
-          {/* Security */}
-          <div className="card">
-            <div className="flex items-center gap-2 mb-4">
-              <Shield className="w-5 h-5 text-warning" />
-              <h2 className="section-title">Security</h2>
-            </div>
-
-            <div className="p-4 rounded-xl bg-bg-tertiary border border-bg-border">
-              <div className="flex items-start gap-3">
-                <Settings className="w-5 h-5 text-text-dim mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-text">Credential Management</p>
-                  <p className="text-xs text-text-muted mt-1">
-                    All API credentials are managed through the Maton CLI gateway. No credentials are stored in this application.
-                    Connection IDs reference your Maton account at <span className="text-primary font-mono text-[11px]">labseme21@icloud.com</span>.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -258,29 +216,15 @@ export default function SettingsPage() {
 function SettingsRow({
   label,
   description,
-  action,
-  badge,
 }: {
   label: string;
   description: string;
-  action: string;
-  badge?: string;
 }) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg bg-bg-tertiary hover:bg-bg-secondary transition-colors">
+    <div className="flex items-center justify-between p-3 rounded-lg bg-bg-tertiary">
       <div>
         <p className="text-sm font-medium text-text">{label}</p>
         <p className="text-xs text-text-muted">{description}</p>
-      </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
-        {badge ? (
-          <Badge variant="gray">{badge}</Badge>
-        ) : (
-          <button className="text-xs text-primary hover:underline flex items-center gap-1">
-            {action}
-            <ChevronRight className="w-3 h-3" />
-          </button>
-        )}
       </div>
     </div>
   );
