@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Users,
   Settings,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,19 +25,34 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-56 flex flex-col bg-bg-secondary border-r border-bg-border z-40">
+    <aside
+      className="fixed inset-y-0 left-0 w-60 flex flex-col z-40"
+      style={{
+        background: "rgba(255, 255, 255, 0.65)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        borderRight: "1px solid rgba(255, 255, 255, 0.4)",
+        boxShadow: "1px 0 20px rgba(0, 0, 0, 0.04)",
+      }}
+    >
       {/* Logo */}
-      <div className="h-14 flex items-center px-5 border-b border-bg-border">
+      <div
+        className="h-16 flex items-center px-5"
+        style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
+      >
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-white text-xs font-bold">S</span>
+          <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center shadow-glow">
+            <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-text tracking-tight">Scramble</span>
+          <div>
+            <p className="text-sm font-bold text-text leading-none tracking-tight">Scramble</p>
+            <p className="text-[10px] text-text-muted leading-none mt-0.5 font-medium">Marketing Hub</p>
+          </div>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5">
+      <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
@@ -51,14 +67,16 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-bg-border">
+      {/* User */}
+      <div className="px-4 py-4" style={{ borderTop: "1px solid rgba(0, 0, 0, 0.06)" }}>
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-bg-tertiary flex items-center justify-center">
-            <span className="text-xs font-medium text-text-muted">G</span>
+          <div
+            className="w-8 h-8 rounded-full gradient-brand flex items-center justify-center"
+          >
+            <span className="text-xs font-bold text-white">G</span>
           </div>
           <div>
-            <p className="text-xs font-medium text-text leading-none">Gabriel</p>
+            <p className="text-xs font-semibold text-text leading-none">Gabriel</p>
             <p className="text-[11px] text-text-dim leading-none mt-0.5">Admin</p>
           </div>
         </div>
