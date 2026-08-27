@@ -3,8 +3,12 @@ import Link from "next/link";
 import {
   Users,
   AlertCircle,
-  Plus,
   ArrowUpRight,
+  Zap,
+  Settings,
+  ArrowRight,
+  Activity,
+  Plus,
 } from "lucide-react";
 import Topbar from "@/components/dashboard/Topbar";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
@@ -13,7 +17,6 @@ import { readClients } from "@/lib/clients-store";
 import { getAllAlerts, getSetupProgress } from "@/lib/alerts";
 import { getPackageLabel } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
-import StatusDot from "@/components/ui/StatusDot";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STAT CARDS
@@ -52,27 +55,145 @@ function StatCard({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMPTY STATE
+// QUICK START CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
-function EmptyStateCard() {
+function QuickStartCard({
+  href,
+  icon: Icon,
+  label,
+  description,
+  iconColor,
+  iconBg,
+}: {
+  href: string;
+  icon: React.ElementType;
+  label: string;
+  description: string;
+  iconColor: string;
+  iconBg: string;
+}) {
   return (
-    <div className="card">
-      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+    <Link href={href} className="card-interactive group flex flex-col gap-4 p-5 rounded-xl">
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: iconBg }}
+      >
+        <Icon className="w-5 h-5" style={{ color: iconColor }} />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-semibold text-text leading-tight">{label}</p>
+        <p className="text-xs text-text-muted mt-1 leading-relaxed">{description}</p>
+      </div>
+      <div className="flex items-center gap-1 text-xs font-medium" style={{ color: iconColor }}>
+        Get started
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+      </div>
+    </Link>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMPTY STATE — modern hero + quick start cards
+// ─────────────────────────────────────────────────────────────────────────────
+
+function EmptyStateHero() {
+  return (
+    <div className="space-y-8 animate-slide-up">
+      {/* Hero banner */}
+      <div
+        className="relative overflow-hidden rounded-2xl p-10 text-center"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(16,185,129,0.14) 0%, rgba(20,184,166,0.06) 40%, rgba(245,158,11,0.08) 100%)",
+          border: "1px solid rgba(16,185,129,0.2)",
+        }}
+      >
+        {/* Decorative glow blobs */}
         <div
-          className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-          style={{ background: "var(--color-primary-dim)" }}
-        >
-          <Users className="w-8 h-8 text-primary" />
+          style={{
+            position: "absolute",
+            top: "-90px",
+            right: "-90px",
+            width: "320px",
+            height: "320px",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(16,185,129,0.14) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-60px",
+            left: "-60px",
+            width: "260px",
+            height: "260px",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(245,158,11,0.10) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div className="relative" style={{ zIndex: 1 }}>
+          <div className="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center mx-auto mb-5 shadow-glow">
+            <Zap className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-text mb-2">
+            Welcome to{" "}
+            <span className="gradient-text">Scramble</span>
+          </h1>
+          <p className="text-base text-text-muted max-w-md mx-auto leading-relaxed">
+            Your marketing operations hub. Track SEO, ads, and client
+            performance — all in one place.
+          </p>
         </div>
-        <h3 className="text-lg font-bold text-text mb-2">No clients yet</h3>
-        <p className="text-sm text-text-muted mb-6 max-w-xs">
-          Add your first client to start tracking their SEO and ad performance
+      </div>
+
+      {/* Quick Start grid */}
+      <div>
+        <p
+          className="text-[11px] font-semibold uppercase tracking-widest mb-4"
+          style={{ color: "var(--color-text-dim)" }}
+        >
+          Get started
         </p>
-        <Link href="/clients" className="btn-primary flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          Add Client
-        </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <QuickStartCard
+            href="/clients"
+            icon={Plus}
+            label="Add First Client"
+            description="Start tracking SEO rankings and ad spend for a new client."
+            iconColor="var(--color-primary)"
+            iconBg="var(--color-primary-dim)"
+          />
+          <QuickStartCard
+            href="/settings"
+            icon={Settings}
+            label="Connect APIs"
+            description="Link Google Search Console, Analytics, and Ads accounts."
+            iconColor="var(--color-accent)"
+            iconBg="var(--color-accent-dim)"
+          />
+          <QuickStartCard
+            href="/clients"
+            icon={Users}
+            label="View Clients"
+            description="Browse and manage your full client portfolio."
+            iconColor="#818cf8"
+            iconBg="rgba(129,140,248,0.12)"
+          />
+          <QuickStartCard
+            href="/settings"
+            icon={Activity}
+            label="Check Status"
+            description="Verify all API connections are healthy and ready."
+            iconColor="var(--color-success)"
+            iconBg="var(--color-success-dim)"
+          />
+        </div>
       </div>
     </div>
   );
@@ -84,24 +205,17 @@ function EmptyStateCard() {
 
 function DashboardContent() {
   const clients = readClients();
-  const activeClients = clients.filter((c) => c.status === "active" || c.status === "onboarding");
+  const activeClients = clients.filter(
+    (c) => c.status === "active" || c.status === "onboarding"
+  );
   const allAlerts = getAllAlerts(clients);
   const criticalCount = allAlerts.filter((a) => a.severity === "critical").length;
 
   // If no clients, show empty state
   if (clients.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Welcome Section */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-text">Welcome to Scramble</h1>
-          <p className="text-base text-text-muted">
-            Your marketing operations hub. Add your first client to get started.
-          </p>
-        </div>
-
-        {/* Empty State */}
-        <EmptyStateCard />
+      <div className="max-w-5xl mx-auto">
+        <EmptyStateHero />
       </div>
     );
   }
@@ -145,9 +259,7 @@ function DashboardContent() {
                     />
                     Action Needed
                   </h2>
-                  <p className="section-subtitle mt-0.5">
-                    Sorted by urgency
-                  </p>
+                  <p className="section-subtitle mt-0.5">Sorted by urgency</p>
                 </div>
                 {allAlerts.length > 0 && (
                   <span
@@ -180,7 +292,10 @@ function DashboardContent() {
                 <h2 className="section-title">Clients</h2>
                 <p className="section-subtitle">{activeClients.length} active</p>
               </div>
-              <Link href="/clients" className="btn-ghost text-xs flex items-center gap-1">
+              <Link
+                href="/clients"
+                className="btn-ghost text-xs flex items-center gap-1"
+              >
                 All clients
                 <ArrowUpRight className="w-3 h-3" />
               </Link>
@@ -195,15 +310,17 @@ function DashboardContent() {
                   .join("")
                   .toUpperCase();
                 const progress = getSetupProgress(client);
-                const clientAlerts = allAlerts.filter((a) => a.clientId === client.id);
-                const hasCritical = clientAlerts.some((a) => a.severity === "critical");
+                const clientAlerts = allAlerts.filter(
+                  (a) => a.clientId === client.id
+                );
+                const hasCritical = clientAlerts.some(
+                  (a) => a.severity === "critical"
+                );
 
                 return (
                   <Link key={client.id} href={`/clients/${client.id}`}>
                     <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-tertiary transition-colors group">
-                      <div
-                        className="w-9 h-9 rounded-lg gradient-brand flex items-center justify-center text-white text-xs font-bold flex-shrink-0 relative"
-                      >
+                      <div className="w-9 h-9 rounded-lg gradient-brand flex items-center justify-center text-white text-xs font-bold flex-shrink-0 relative">
                         {initials}
                         {hasCritical && (
                           <span
@@ -217,7 +334,9 @@ function DashboardContent() {
                           {client.name}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-text-dim truncate">{client.domain}</span>
+                          <span className="text-xs text-text-dim truncate">
+                            {client.domain}
+                          </span>
                         </div>
                         {/* Setup progress */}
                         <div className="flex items-center gap-2 mt-1.5">
@@ -265,7 +384,8 @@ function DashboardContent() {
                                 : "var(--color-warning)",
                             }}
                           >
-                            {clientAlerts.length} alert{clientAlerts.length > 1 ? "s" : ""}
+                            {clientAlerts.length} alert
+                            {clientAlerts.length > 1 ? "s" : ""}
                           </span>
                         )}
                       </div>

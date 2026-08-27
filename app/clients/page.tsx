@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Search, Filter } from "lucide-react";
+import { Plus, Search, SlidersHorizontal } from "lucide-react";
 import Topbar from "@/components/dashboard/Topbar";
 import ClientCard from "@/components/dashboard/ClientCard";
 import AddClientModal from "@/components/dashboard/AddClientModal";
@@ -60,7 +60,10 @@ export default function ClientsPage() {
         title="Clients"
         subtitle={`${clients.length} clients · ${activeCount} active`}
         actions={
-          <button onClick={() => setShowAddModal(true)} className="btn-primary flex items-center gap-2">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="btn-primary flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" />
             Add Client
           </button>
@@ -69,29 +72,51 @@ export default function ClientsPage() {
 
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          {/* Filter bar */}
+          <div
+            className="flex flex-col sm:flex-row gap-3 mb-6 p-3 rounded-xl"
+            style={{
+              background: "var(--color-bg-card)",
+              border: "1px solid var(--color-bg-border)",
+            }}
+          >
+            {/* Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
+                style={{ color: "var(--color-text-dim)" }}
+              />
               <input
                 type="text"
                 placeholder="Search clients…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="input pl-9"
+                className="input pl-8"
+                style={{ background: "var(--color-bg-tertiary)" }}
               />
             </div>
 
+            {/* Selects */}
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-text-muted flex-shrink-0" />
+              <div
+                className="flex items-center gap-1.5 px-2"
+                style={{ color: "var(--color-text-dim)" }}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="text-xs font-medium hidden sm:block">Filter</span>
+              </div>
+
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="input w-auto min-w-[120px]"
+                className="input w-auto min-w-[130px]"
+                style={{ background: "var(--color-bg-tertiary)" }}
               >
                 {STATUS_FILTERS.map((s) => (
                   <option key={s} value={s}>
-                    {s === "all" ? "All Statuses" : s.charAt(0).toUpperCase() + s.slice(1)}
+                    {s === "all"
+                      ? "All Statuses"
+                      : s.charAt(0).toUpperCase() + s.slice(1)}
                   </option>
                 ))}
               </select>
@@ -99,7 +124,8 @@ export default function ClientsPage() {
               <select
                 value={packageFilter}
                 onChange={(e) => setPackageFilter(e.target.value)}
-                className="input w-auto min-w-[140px]"
+                className="input w-auto min-w-[145px]"
+                style={{ background: "var(--color-bg-tertiary)" }}
               >
                 {PACKAGE_FILTERS.map((p) => (
                   <option key={p} value={p}>
@@ -110,13 +136,28 @@ export default function ClientsPage() {
             </div>
           </div>
 
+          {/* Results count (when filtering) */}
+          {(search || statusFilter !== "all" || packageFilter !== "all") &&
+            !loading &&
+            !error && (
+              <p className="text-xs text-text-dim mb-4">
+                {filtered.length} result{filtered.length !== 1 ? "s" : ""}{" "}
+                {filtered.length !== clients.length &&
+                  `(of ${clients.length} total)`}
+              </p>
+            )}
+
           {loading ? (
             <PageLoader text="Loading clients…" />
           ) : error ? (
             <ErrorAlert message={error} />
           ) : filtered.length === 0 ? (
             <EmptyState
-              title={clients.length === 0 ? "No clients yet" : "No clients match your filters"}
+              title={
+                clients.length === 0
+                  ? "No clients yet"
+                  : "No clients match your filters"
+              }
               description={
                 clients.length === 0
                   ? "Add your first client to get started with tracking and reporting."
@@ -124,7 +165,10 @@ export default function ClientsPage() {
               }
               action={
                 clients.length === 0 ? (
-                  <button onClick={() => setShowAddModal(true)} className="btn-primary flex items-center gap-2">
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="btn-primary flex items-center gap-2"
+                  >
                     <Plus className="w-4 h-4" />
                     Add First Client
                   </button>
