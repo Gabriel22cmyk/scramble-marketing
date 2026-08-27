@@ -1,0 +1,87 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Zap } from "lucide-react";
+
+const NAV_ITEMS = [
+  { href: "/", label: "Dashboard" },
+  { href: "/clients", label: "Clients" },
+  { href: "/settings", label: "Settings" },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  }
+
+  return (
+    <header
+      style={{
+        background: "rgba(255, 255, 255, 0.75)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+        boxShadow: "0 1px 20px rgba(0, 0, 0, 0.04)",
+      }}
+      className="fixed top-0 left-0 right-0 z-50"
+    >
+      <div className="max-w-6xl mx-auto px-6">
+        <nav className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center"
+              style={{
+                background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                boxShadow: "0 2px 8px rgba(8, 145, 178, 0.25)",
+              }}
+            >
+              <Zap className="w-4.5 h-4.5 text-white" />
+            </div>
+            <span className="text-base font-bold text-text tracking-tight">Scramble</span>
+          </Link>
+
+          {/* Nav links */}
+          <div className="flex items-center gap-8">
+            {NAV_ITEMS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="relative text-[15px] font-medium transition-colors"
+                style={{
+                  color: isActive(href) ? "#0891b2" : "#555",
+                }}
+              >
+                {label}
+                {isActive(href) && (
+                  <span
+                    className="absolute -bottom-[1.19rem] left-0 right-0 h-0.5 rounded-sm"
+                    style={{
+                      background: "linear-gradient(90deg, #0891b2, #06b6d4)",
+                    }}
+                  />
+                )}
+              </Link>
+            ))}
+          </div>
+
+          {/* User */}
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              style={{
+                background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+              }}
+            >
+              G
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+  );
+}

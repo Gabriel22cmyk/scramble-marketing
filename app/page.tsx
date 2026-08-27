@@ -4,132 +4,187 @@ import {
   Users,
   AlertCircle,
   Plus,
-  ArrowUpRight,
   ArrowRight,
   Settings,
   BarChart3,
   Zap,
+  ArrowUpRight,
 } from "lucide-react";
-import Topbar from "@/components/dashboard/Topbar";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import { SkeletonBlock } from "@/components/ui/LoadingSpinner";
 import { readClients } from "@/lib/clients-store";
 import { getAllAlerts, getSetupProgress } from "@/lib/alerts";
 import { getPackageLabel } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
-import StatusDot from "@/components/ui/StatusDot";
 
-// ─── Empty State ─────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════
+   EMPTY STATE — Hero + onboarding cards
+   ═══════════════════════════════════════════════════════ */
 
 function EmptyDashboard() {
   return (
-    <div className="max-w-3xl mx-auto py-20 px-6">
+    <>
       {/* Hero */}
-      <div className="text-center mb-14">
+      <section
+        className="pt-32 pb-24 text-center relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 25%, #e0f2fe 50%, #ede9fe 75%, #e8f4f8 100%)",
+          backgroundSize: "200% 200%",
+          animation: "pearlShift 12s ease-in-out infinite",
+        }}
+      >
+        {/* Radial overlays */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: "rgba(255, 255, 255, 0.7)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)",
-            boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
-            color: "var(--color-primary)",
+            background: "radial-gradient(ellipse at 25% 50%, rgba(8, 145, 178, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 75% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%)",
           }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-success" />
-          System online
+        />
+
+        <div className="relative z-10 max-w-3xl mx-auto px-6">
+          {/* Badge */}
+          <div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-8"
+            style={{
+              background: "rgba(255, 255, 255, 0.8)",
+              backdropFilter: "blur(10px)",
+              color: "#0891b2",
+              boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
+              border: "1px solid rgba(255,255,255,0.5)",
+            }}
+          >
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            System Online
+          </div>
+
+          <h1
+            className="text-5xl font-extrabold mb-5"
+            style={{ color: "#1e293b", letterSpacing: "-1px", lineHeight: 1.1 }}
+          >
+            Your Marketing{" "}
+            <span style={{ color: "#0891b2" }}>Operations Hub</span>
+          </h1>
+          <p className="text-xl mb-10 max-w-xl mx-auto" style={{ color: "#64748b", lineHeight: 1.7 }}>
+            Add clients, connect APIs, and let Scramble handle SEO tracking, reporting, and campaign management.
+          </p>
+
+          {/* Hero buttons */}
+          <div className="flex items-center justify-center gap-4">
+            <Link
+              href="/clients"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-white font-semibold text-base transition-all hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+              }}
+            >
+              <Plus className="w-5 h-5" />
+              Add First Client
+            </Link>
+            <Link
+              href="/settings"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-base transition-all hover:-translate-y-0.5"
+              style={{
+                background: "rgba(255, 255, 255, 0.6)",
+                backdropFilter: "blur(10px)",
+                color: "#0891b2",
+                border: "1px solid rgba(8, 145, 178, 0.2)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+              }}
+            >
+              Connect APIs
+            </Link>
+          </div>
         </div>
-        <h1 className="text-4xl font-extrabold text-text tracking-tight mb-4" style={{ letterSpacing: "-0.5px", lineHeight: 1.1 }}>
-          Welcome to <span className="gradient-text">Scramble</span>
-        </h1>
-        <p className="text-lg text-text-muted max-w-md mx-auto leading-relaxed">
-          Your marketing operations hub. Get started by adding your first client.
-        </p>
-      </div>
+      </section>
 
-      {/* Action cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Link
-          href="/clients"
-          className="group card hover:shadow-glow"
-          style={{ padding: "1.75rem" }}
-        >
-          <div className="flex items-start justify-between mb-4">
-            <div
-              className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center"
-              style={{ boxShadow: "0 2px 8px rgba(8, 145, 178, 0.2)" }}
-            >
-              <Plus className="w-5 h-5 text-white" />
-            </div>
-            <ArrowRight className="w-4 h-4 text-text-dim group-hover:text-primary transition-all group-hover:translate-x-0.5" />
+      {/* What You Get */}
+      <section
+        className="py-20"
+        style={{ background: "linear-gradient(180deg, #f8fdfe 0%, #f0f9fc 50%, #f8fdfe 100%)" }}
+      >
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl font-bold mb-3" style={{ color: "#1e293b" }}>
+              Everything You Need
+            </h2>
+            <p className="text-lg" style={{ color: "#64748b", maxWidth: 550, margin: "0 auto" }}>
+              Track SEO, manage clients, and generate reports — all in one place
+            </p>
           </div>
-          <p className="text-sm font-bold text-text mb-1.5">Add a client</p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            Business details, goals, and budget — everything needed to start tracking SEO.
-          </p>
-        </Link>
 
-        <Link
-          href="/settings"
-          className="group card hover:shadow-glow"
-          style={{ padding: "1.75rem" }}
-        >
-          <div className="flex items-start justify-between mb-4">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: "var(--color-accent-dim)" }}
-            >
-              <Settings className="w-5 h-5" style={{ color: "var(--color-accent)" }} />
-            </div>
-            <ArrowRight className="w-4 h-4 text-text-dim group-hover:text-primary transition-all group-hover:translate-x-0.5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <Users className="w-6 h-6" />,
+                title: "Client Management",
+                desc: "Add clients with goals, budgets, and business briefs. Track onboarding progress.",
+                active: true,
+              },
+              {
+                icon: <Settings className="w-6 h-6" />,
+                title: "API Integrations",
+                desc: "Google Search Console, Analytics, and Ads — pull live performance data.",
+                active: true,
+              },
+              {
+                icon: <BarChart3 className="w-6 h-6" />,
+                title: "Automated Reports",
+                desc: "Weekly and monthly reports generated automatically for every client.",
+                active: false,
+              },
+              {
+                icon: <Zap className="w-6 h-6" />,
+                title: "Rank Monitoring",
+                desc: "Keyword position tracking with alerts when rankings drop or climb.",
+                active: false,
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="text-center p-8 rounded-2xl transition-all hover:-translate-y-1.5"
+                style={{
+                  background: "white",
+                  border: "1px solid rgba(0, 0, 0, 0.06)",
+                  borderRadius: "20px",
+                  boxShadow: "0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04)",
+                }}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl mx-auto mb-5 flex items-center justify-center"
+                  style={{
+                    background: item.active ? "rgba(8, 145, 178, 0.08)" : "rgba(0,0,0,0.03)",
+                    color: item.active ? "#0891b2" : "#94a3b8",
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <h3 className="text-base font-bold mb-2" style={{ color: "#1e293b" }}>
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#64748b" }}>
+                  {item.desc}
+                </p>
+                {!item.active && (
+                  <span
+                    className="inline-block mt-3 text-xs font-semibold px-3 py-1 rounded-full"
+                    style={{ background: "rgba(0,0,0,0.04)", color: "#94a3b8" }}
+                  >
+                    Coming Soon
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
-          <p className="text-sm font-bold text-text mb-1.5">Connect APIs</p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            Link Google Search Console, Analytics, and Ads to pull live performance data.
-          </p>
-        </Link>
-
-        <div
-          className="card"
-          style={{ padding: "1.75rem", border: "1px dashed rgba(0, 0, 0, 0.08)" }}
-        >
-          <div className="mb-4">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: "rgba(0, 0, 0, 0.03)" }}
-            >
-              <BarChart3 className="w-5 h-5 text-text-dim" />
-            </div>
-          </div>
-          <p className="text-sm font-bold text-text-muted mb-1.5">Reports</p>
-          <p className="text-sm text-text-dim leading-relaxed">
-            Auto-generated weekly and monthly reports. Available once clients are added.
-          </p>
         </div>
-
-        <div
-          className="card"
-          style={{ padding: "1.75rem", border: "1px dashed rgba(0, 0, 0, 0.08)" }}
-        >
-          <div className="mb-4">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: "rgba(0, 0, 0, 0.03)" }}
-            >
-              <Zap className="w-5 h-5 text-text-dim" />
-            </div>
-          </div>
-          <p className="text-sm font-bold text-text-muted mb-1.5">Automations</p>
-          <p className="text-sm text-text-dim leading-relaxed">
-            Rank monitoring, alerts, and scheduled tasks. Coming soon.
-          </p>
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }
 
-// ─── Dashboard with clients ──────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD WITH CLIENTS
+   ═══════════════════════════════════════════════════════ */
 
 function DashboardContent() {
   const clients = readClients();
@@ -142,141 +197,146 @@ function DashboardContent() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="stat-card">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-primary" />
-            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Clients</p>
-          </div>
-          <p className="text-3xl font-extrabold text-text">{activeClients.length}</p>
-          <p className="text-xs text-text-muted">{clients.length} total · {activeClients.length} active</p>
+    <>
+      {/* Header section */}
+      <section className="pt-28 pb-12 px-6" style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}>
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>
+            Dashboard
+          </h1>
+          <p className="text-base" style={{ color: "#64748b" }}>
+            {activeClients.length} active client{activeClients.length !== 1 ? "s" : ""} · {allAlerts.length} alert{allAlerts.length !== 1 ? "s" : ""}
+          </p>
         </div>
-        <div className="stat-card">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" style={{ color: criticalCount > 0 ? "var(--color-danger)" : "var(--color-text-muted)" }} />
-            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Alerts</p>
-          </div>
-          <p className="text-3xl font-extrabold text-text">{allAlerts.length}</p>
-          <p className="text-xs text-text-muted">{criticalCount} critical</p>
-        </div>
-      </div>
+      </section>
 
-      {/* Content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Alerts */}
-        <div className="lg:col-span-2">
-          {allAlerts.length > 0 && (
-            <div className="card">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2">
-                  <AlertCircle
-                    className="w-4 h-4"
-                    style={{ color: criticalCount > 0 ? "var(--color-danger)" : "var(--color-text-muted)" }}
-                  />
-                  <h2 className="section-title">Action Needed</h2>
-                </div>
-                <span
-                  className="text-xs font-bold px-2.5 py-1 rounded-full"
-                  style={{
-                    background: criticalCount > 0 ? "var(--color-danger-dim)" : "var(--color-warning-dim)",
-                    color: criticalCount > 0 ? "var(--color-danger)" : "var(--color-warning)",
-                  }}
-                >
-                  {allAlerts.length} open
-                </span>
+      {/* Stats */}
+      <section className="py-12 px-6" style={{ background: "#f8fdfe" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { label: "Total Clients", value: clients.length, color: "#0891b2" },
+              { label: "Active", value: activeClients.length, color: "#16a34a" },
+              { label: "Alerts", value: allAlerts.length, color: criticalCount > 0 ? "#ef4444" : "#f59e0b" },
+              { label: "Critical", value: criticalCount, color: "#ef4444" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="p-6 rounded-2xl text-center"
+                style={{
+                  background: "white",
+                  border: "1px solid rgba(0,0,0,0.06)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                }}
+              >
+                <p className="text-sm font-semibold mb-1" style={{ color: "#64748b" }}>{stat.label}</p>
+                <p className="text-3xl font-extrabold" style={{ color: stat.color }}>{stat.value}</p>
               </div>
-              <AlertsPanel alerts={allAlerts} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Clients + Alerts */}
+      <section className="py-12 px-6" style={{ background: "linear-gradient(180deg, #f8fdfe 0%, #ffffff 100%)" }}>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Alerts */}
+          {allAlerts.length > 0 && (
+            <div className="lg:col-span-2">
+              <div
+                className="p-7 rounded-2xl"
+                style={{
+                  background: "white",
+                  border: "1px solid rgba(0,0,0,0.06)",
+                  boxShadow: "0 6px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)",
+                }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" style={{ color: criticalCount > 0 ? "#ef4444" : "#f59e0b" }} />
+                    <h2 className="text-lg font-bold" style={{ color: "#1e293b" }}>Action Needed</h2>
+                  </div>
+                  <span
+                    className="text-xs font-bold px-3 py-1 rounded-full"
+                    style={{
+                      background: criticalCount > 0 ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)",
+                      color: criticalCount > 0 ? "#ef4444" : "#f59e0b",
+                    }}
+                  >
+                    {allAlerts.length} open
+                  </span>
+                </div>
+                <AlertsPanel alerts={allAlerts} />
+              </div>
             </div>
           )}
-        </div>
 
-        {/* Client list */}
-        <div>
-          <div className="card">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="section-title">Clients</h2>
-              <Link href="/clients" className="btn-ghost text-xs flex items-center gap-1">
-                View all
-                <ArrowUpRight className="w-3 h-3" />
-              </Link>
-            </div>
+          {/* Client list */}
+          <div>
+            <div
+              className="p-7 rounded-2xl"
+              style={{
+                background: "white",
+                border: "1px solid rgba(0,0,0,0.06)",
+                boxShadow: "0 6px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-lg font-bold" style={{ color: "#1e293b" }}>Clients</h2>
+                <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#0891b2" }}>
+                  View all <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
 
-            <div className="space-y-1">
-              {clients.map((client) => {
-                const initials = client.name
-                  .split(" ")
-                  .map((w) => w[0])
-                  .slice(0, 2)
-                  .join("")
-                  .toUpperCase();
-
-                return (
-                  <Link key={client.id} href={`/clients/${client.id}`}>
-                    <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-primary-dim transition-colors group">
-                      <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                        {initials}
+              <div className="space-y-2">
+                {clients.map((client) => {
+                  const initials = client.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+                  return (
+                    <Link key={client.id} href={`/clients/${client.id}`}>
+                      <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                          style={{ background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)" }}
+                        >
+                          {initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold group-hover:text-cyan-600 transition-colors truncate" style={{ color: "#1e293b" }}>
+                            {client.name}
+                          </p>
+                          <p className="text-xs truncate" style={{ color: "#94a3b8" }}>{client.domain}</p>
+                        </div>
+                        <Badge
+                          variant={client.package === "seo" ? "indigo" : client.package === "seo-ads" ? "purple" : "green"}
+                        >
+                          {getPackageLabel(client.package)}
+                        </Badge>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-text group-hover:text-primary transition-colors truncate">
-                          {client.name}
-                        </p>
-                        <p className="text-xs text-text-dim truncate">{client.domain}</p>
-                      </div>
-                      <Badge
-                        variant={
-                          client.package === "seo" ? "indigo"
-                          : client.package === "seo-ads" ? "purple"
-                          : "green"
-                        }
-                      >
-                        {getPackageLabel(client.package)}
-                      </Badge>
-                    </div>
-                  </Link>
-                );
-              })}
-
-              <Link
-                href="/clients"
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl text-xs font-semibold text-text-muted hover:text-primary hover:bg-primary-dim transition-colors mt-2"
-                style={{ border: "1px dashed rgba(0, 0, 0, 0.08)" }}
-              >
-                <Plus className="w-3 h-3" />
-                Add client
-              </Link>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <Topbar title="Dashboard" />
-      <main className="flex-1 overflow-y-auto p-8">
-        <Suspense
-          fallback={
-            <div className="max-w-5xl mx-auto space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                {[...Array(2)].map((_, i) => (
-                  <div key={i} className="card space-y-3">
-                    <SkeletonBlock className="h-3 w-16" />
-                    <SkeletonBlock className="h-8 w-12" />
-                    <SkeletonBlock className="h-3 w-24" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          }
-        >
-          <DashboardContent />
-        </Suspense>
-      </main>
-    </div>
+    <Suspense
+      fallback={
+        <section className="pt-32 pb-20 px-6">
+          <div className="max-w-5xl mx-auto space-y-6">
+            <SkeletonBlock className="h-12 w-64 mx-auto" />
+            <SkeletonBlock className="h-6 w-96 mx-auto" />
+          </div>
+        </section>
+      }
+    >
+      <DashboardContent />
+    </Suspense>
   );
 }

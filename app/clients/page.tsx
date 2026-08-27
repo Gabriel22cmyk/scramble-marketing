@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Search, Filter } from "lucide-react";
-import Topbar from "@/components/dashboard/Topbar";
+import { Plus, Search } from "lucide-react";
 import ClientCard from "@/components/dashboard/ClientCard";
 import AddClientModal from "@/components/dashboard/AddClientModal";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
@@ -55,60 +54,85 @@ export default function ClientsPage() {
   const activeCount = clients.filter((c) => c.status === "active").length;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <Topbar
-        title="Clients"
-        subtitle={`${clients.length} total · ${activeCount} active`}
-        actions={
-          <button onClick={() => setShowAddModal(true)} className="btn-primary flex items-center gap-2 text-sm">
-            <Plus className="w-3.5 h-3.5" />
+    <>
+      {/* Header */}
+      <section
+        className="pt-28 pb-12 px-6"
+        style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}
+      >
+        <div className="max-w-5xl mx-auto flex items-end justify-between">
+          <div>
+            <h1
+              className="text-3xl font-extrabold mb-2"
+              style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
+            >
+              Clients
+            </h1>
+            <p className="text-base" style={{ color: "#64748b" }}>
+              {clients.length} total · {activeCount} active
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm transition-all hover:-translate-y-0.5"
+            style={{
+              background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+              boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+            }}
+          >
+            <Plus className="w-4 h-4" />
             Add Client
           </button>
-        }
-      />
+        </div>
+      </section>
 
-      <main className="flex-1 overflow-y-auto p-6 bg-bg">
+      {/* Filters + Content */}
+      <section className="py-10 px-6" style={{ background: "#f8fdfe" }}>
         <div className="max-w-5xl mx-auto">
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div
+            className="flex flex-col sm:flex-row gap-3 mb-8 p-5 rounded-2xl"
+            style={{
+              background: "white",
+              border: "1px solid rgba(0,0,0,0.06)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+            }}
+          >
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "#94a3b8" }} />
               <input
                 type="text"
                 placeholder="Search clients…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="input pl-9"
+                className="input pl-10"
               />
             </div>
-
-            <div className="flex items-center gap-2">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="input w-auto min-w-[120px]"
-              >
-                {STATUS_FILTERS.map((s) => (
-                  <option key={s} value={s}>
-                    {s === "all" ? "All Statuses" : s.charAt(0).toUpperCase() + s.slice(1)}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={packageFilter}
-                onChange={(e) => setPackageFilter(e.target.value)}
-                className="input w-auto min-w-[140px]"
-              >
-                {PACKAGE_FILTERS.map((p) => (
-                  <option key={p} value={p}>
-                    {p === "all" ? "All Packages" : getPackageLabel(p)}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input w-auto min-w-[130px]"
+            >
+              {STATUS_FILTERS.map((s) => (
+                <option key={s} value={s}>
+                  {s === "all" ? "All Statuses" : s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>
+              ))}
+            </select>
+            <select
+              value={packageFilter}
+              onChange={(e) => setPackageFilter(e.target.value)}
+              className="input w-auto min-w-[150px]"
+            >
+              {PACKAGE_FILTERS.map((p) => (
+                <option key={p} value={p}>
+                  {p === "all" ? "All Packages" : getPackageLabel(p)}
+                </option>
+              ))}
+            </select>
           </div>
 
+          {/* Content */}
           {loading ? (
             <PageLoader text="Loading clients…" />
           ) : error ? (
@@ -123,28 +147,35 @@ export default function ClientsPage() {
               }
               action={
                 clients.length === 0 ? (
-                  <button onClick={() => setShowAddModal(true)} className="btn-primary flex items-center gap-2 text-sm">
-                    <Plus className="w-3.5 h-3.5" />
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm"
+                    style={{
+                      background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25)",
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
                     Add First Client
                   </button>
                 ) : undefined
               }
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {filtered.map((client) => (
                 <ClientCard key={client.id} client={client} />
               ))}
             </div>
           )}
         </div>
-      </main>
+      </section>
 
       <AddClientModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSuccess={fetchClients}
       />
-    </div>
+    </>
   );
 }

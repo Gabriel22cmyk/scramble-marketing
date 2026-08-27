@@ -16,7 +16,7 @@ import {
   AlertTriangle,
   TrendingUp,
 } from "lucide-react";
-import Topbar from "@/components/dashboard/Topbar";
+
 import Badge from "@/components/ui/Badge";
 import StatusDot from "@/components/ui/StatusDot";
 import { PageLoader, LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -603,14 +603,14 @@ export default function ClientDetailPage({
 
   if (loading) return (
     <div className="flex flex-col h-full overflow-hidden">
-      <Topbar title="Loading…" />
+      
       <PageLoader text="Loading client…" />
     </div>
   );
 
   if (error || !client) return (
     <div className="flex flex-col h-full overflow-hidden">
-      <Topbar title="Error" />
+      
       <div className="p-6">
         <ErrorAlert message={error ?? "Client not found"} />
         <Link href="/clients" className="btn-secondary mt-4 inline-flex items-center gap-2">
@@ -641,15 +641,19 @@ export default function ClientDetailPage({
   ) as "indigo" | "purple" | "green";
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <Topbar
-        title={client.name}
-        subtitle={`${client.domain} · ${getPackageLabel(client.package)}`}
-        actions={
-          <div className="flex items-center gap-2">
-            <Link href="/clients" className="btn-ghost flex items-center gap-1.5 text-sm">
-              <ArrowLeft className="w-4 h-4" /> Clients
+    <div className="min-h-screen" style={{ background: "#f8fdfe" }}>
+      <section className="pt-28 pb-8 px-6" style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-4">
+            <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#0891b2" }}>
+              <ArrowLeft className="w-4 h-4" /> Back to Clients
             </Link>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <h1 className="text-3xl font-extrabold mb-1" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>{client.name}</h1>
+              <p className="text-base" style={{ color: "#64748b" }}>{client.domain} · {getPackageLabel(client.package)}</p>
+            </div>
             <button
               onClick={() => setShowReport(true)}
               className="btn-secondary flex items-center gap-1.5 text-sm"
@@ -657,11 +661,11 @@ export default function ClientDetailPage({
               <FileText className="w-3.5 h-3.5" /> Preview Report
             </button>
           </div>
-        }
-      />
+        </div>
+      </section>
 
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <section className="py-8 px-6">
+        <div className="max-w-5xl mx-auto space-y-6">
 
           {/* ── Client header ── */}
           <div className="card">
@@ -853,7 +857,7 @@ export default function ClientDetailPage({
           {/* ── Activity Log ── */}
           <ActivityLog clientId={client.id} notes={client.notes ?? []} />
         </div>
-      </main>
+      </section>
 
       {showReport && (
         <ClientReportPreview

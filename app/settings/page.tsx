@@ -8,7 +8,6 @@ import {
   HelpCircle,
   Zap,
 } from "lucide-react";
-import Topbar from "@/components/dashboard/Topbar";
 import StatusDot from "@/components/ui/StatusDot";
 import Badge from "@/components/ui/Badge";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
@@ -42,9 +41,9 @@ const DEFAULT_SERVICES: ServiceHealth[] = [
 ];
 
 function StatusIcon({ status }: { status: "ok" | "error" | "unknown" }) {
-  if (status === "ok") return <CheckCircle className="w-4 h-4 text-success" />;
-  if (status === "error") return <XCircle className="w-4 h-4 text-danger" />;
-  return <HelpCircle className="w-4 h-4 text-text-dim" />;
+  if (status === "ok") return <CheckCircle className="w-5 h-5 text-green-500" />;
+  if (status === "error") return <XCircle className="w-5 h-5 text-red-500" />;
+  return <HelpCircle className="w-5 h-5" style={{ color: "#94a3b8" }} />;
 }
 
 export default function SettingsPage() {
@@ -73,27 +72,56 @@ export default function SettingsPage() {
   const services = health?.services ?? DEFAULT_SERVICES;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <Topbar title="Settings" subtitle="API connections" />
+    <>
+      {/* Header */}
+      <section
+        className="pt-28 pb-12 px-6"
+        style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}
+      >
+        <div className="max-w-4xl mx-auto">
+          <h1
+            className="text-3xl font-extrabold mb-2"
+            style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
+          >
+            Settings
+          </h1>
+          <p className="text-base" style={{ color: "#64748b" }}>
+            Manage API connections and integrations
+          </p>
+        </div>
+      </section>
 
-      <main className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-3xl mx-auto space-y-6">
-          {/* API Connections */}
-          <div className="card">
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center gap-3">
+      {/* Content */}
+      <section className="py-12 px-6" style={{ background: "#f8fdfe" }}>
+        <div className="max-w-4xl mx-auto">
+          <div
+            className="p-8 rounded-2xl"
+            style={{
+              background: "white",
+              border: "1px solid rgba(0,0,0,0.06)",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)",
+            }}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between mb-8">
+              <div className="flex items-center gap-4">
                 <div
-                  className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center"
-                  style={{ boxShadow: "0 2px 8px rgba(8, 145, 178, 0.2)" }}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    boxShadow: "0 2px 10px rgba(8, 145, 178, 0.25)",
+                  }}
                 >
-                  <Zap className="w-5 h-5 text-white" />
+                  <Zap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="section-title">API Connections</h2>
-                  <p className="section-subtitle">Connect Google to pull live client data</p>
+                  <h2 className="text-xl font-bold" style={{ color: "#1e293b" }}>API Connections</h2>
+                  <p className="text-sm" style={{ color: "#64748b" }}>
+                    Connect your Google account to pull live client data
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+              <div className="flex items-center gap-3 flex-shrink-0">
                 {health && (
                   <Badge variant={overallBadge}>
                     {health.overall === "ok" ? "All OK" : health.overall === "degraded" ? "Degraded" : "Error"}
@@ -102,14 +130,22 @@ export default function SettingsPage() {
                 <button
                   onClick={checkHealth}
                   disabled={loading}
-                  className="btn-secondary flex items-center gap-1.5 text-xs"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all hover:-translate-y-0.5"
+                  style={{
+                    background: "rgba(255,255,255,0.6)",
+                    backdropFilter: "blur(10px)",
+                    color: "#0891b2",
+                    border: "1px solid rgba(8,145,178,0.2)",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  }}
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
                   {checked ? "Re-check" : "Check Status"}
                 </button>
               </div>
             </div>
 
+            {/* Services */}
             {loading && !health ? (
               <PageLoader text="Checking connections…" />
             ) : (
@@ -119,29 +155,29 @@ export default function SettingsPage() {
                   return (
                     <div
                       key={svc.connectionId}
-                      className="flex items-center gap-4 p-4 rounded-xl transition-all"
+                      className="flex items-center gap-5 p-5 rounded-xl transition-all"
                       style={{
-                        background: "rgba(255, 255, 255, 0.5)",
-                        border: "1px solid rgba(0, 0, 0, 0.04)",
+                        background: "#f8fdfe",
+                        border: "1px solid rgba(0,0,0,0.04)",
                       }}
                     >
-                      <span className="text-xl flex-shrink-0">{info?.icon ?? "🔗"}</span>
+                      <span className="text-2xl flex-shrink-0">{info?.icon ?? "🔗"}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold text-text">{svc.service}</p>
+                          <p className="text-base font-semibold" style={{ color: "#1e293b" }}>{svc.service}</p>
                           <StatusIcon status={svc.status} />
                           {svc.latencyMs !== undefined && (
-                            <span className="text-xs text-text-dim">{svc.latencyMs}ms</span>
+                            <span className="text-xs" style={{ color: "#94a3b8" }}>{svc.latencyMs}ms</span>
                           )}
                         </div>
-                        <p className="text-xs text-text-muted mt-0.5">{info?.description}</p>
+                        <p className="text-sm mt-0.5" style={{ color: "#64748b" }}>{info?.description}</p>
                         {svc.message && (
-                          <p className="text-xs text-danger mt-1">{svc.message}</p>
+                          <p className="text-sm text-red-500 mt-1">{svc.message}</p>
                         )}
                       </div>
                       <StatusDot
                         status={svc.status === "ok" ? "active" : svc.status === "error" ? "error" : "unknown"}
-                        size="md"
+                        size="lg"
                         pulse={svc.status === "ok"}
                       />
                     </div>
@@ -151,17 +187,17 @@ export default function SettingsPage() {
             )}
 
             {health?.checkedAt && (
-              <p className="text-xs text-text-dim mt-4 text-right">
-                Checked {new Date(health.checkedAt).toLocaleTimeString()}
+              <p className="text-sm mt-5 text-right" style={{ color: "#94a3b8" }}>
+                Last checked {new Date(health.checkedAt).toLocaleTimeString()}
               </p>
             )}
           </div>
 
-          <p className="text-center text-xs text-text-dim font-medium">
+          <p className="text-center text-sm font-medium mt-8" style={{ color: "#94a3b8" }}>
             Scramble Marketing Hub · v1.0.0
           </p>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

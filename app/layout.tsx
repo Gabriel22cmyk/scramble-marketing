@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/dashboard/Sidebar";
+import Navbar from "@/components/dashboard/Navbar";
 
 export const metadata: Metadata = {
   title: "Scramble Marketing Hub",
@@ -17,13 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="text-text antialiased">
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <div className="flex-1 flex flex-col overflow-hidden pl-60">
-            {children}
-          </div>
-        </div>
+      <body className="text-text antialiased min-h-screen">
+        <Navbar />
+        <main>{children}</main>
       </body>
     </html>
   );
