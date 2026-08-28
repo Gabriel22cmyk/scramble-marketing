@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function AnalyticsPage() {
   return (
-    <section className="pt-28 pb-20 px-6" style={{ background: "#f8fdfe", minHeight: "100vh" }}>
+    <section className="pt-28 pb-20 px-6" style={{ background: "#1a2e2a", minHeight: "100vh" }}>
       <div className="max-w-md mx-auto text-center">
         <div className="text-6xl mb-4">🔜</div>
-        <h2 className="text-2xl font-bold mb-2" style={{ color: "#1e293b" }}>Coming Soon</h2>
-        <p className="mb-6" style={{ color: "#64748b" }}>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: "#f5f5f0" }}>Coming Soon</h2>
+        <p className="mb-6" style={{ color: "#a8a89d" }}>
           Analytics will be available once you&apos;ve connected Google Analytics to your clients.
         </p>
         <Link href="/" className="btn-primary inline-flex items-center gap-2">

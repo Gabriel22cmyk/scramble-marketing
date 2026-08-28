@@ -59,7 +59,7 @@ export default function ClientsPage() {
       <section
         className="text-center relative"
         style={{
-          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 50%, #e0f2fe 100%)",
+          background: "linear-gradient(135deg, #1a2e2a 0%, #1f3a35 50%, #243633 100%)",
           paddingTop: "180px",
           paddingBottom: "64px",
         }}
@@ -67,18 +67,18 @@ export default function ClientsPage() {
         <div className="max-w-2xl mx-auto px-6">
           <h1
             className="text-4xl font-extrabold mb-3"
-            style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
+            style={{ color: "#f5f5f0", letterSpacing: "-0.5px" }}
           >
             Clients
           </h1>
-          <p className="text-lg mb-8" style={{ color: "#64748b" }}>
+          <p className="text-lg mb-8" style={{ color: "#a8a89d" }}>
             {clients.length} total · {activeCount} active
           </p>
           <button
             onClick={() => setShowAddModal(true)}
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-white font-semibold text-base transition-all hover:-translate-y-0.5"
             style={{
-              background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+              background: "linear-gradient(135deg, #6b8e7f 0%, #7fa592 100%)",
               boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
             }}
           >
@@ -89,7 +89,7 @@ export default function ClientsPage() {
       </section>
 
       {/* Filters + Content */}
-      <section className="py-10 px-6" style={{ background: "#f8fdfe" }}>
+      <section className="py-10 px-6" style={{ background: "#1a2e2a" }}>
         <div className="max-w-5xl mx-auto">
           {/* Filters */}
           <div
@@ -101,7 +101,7 @@ export default function ClientsPage() {
             }}
           >
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "#94a3b8" }} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "#7a7a70" }} />
               <input
                 type="text"
                 placeholder="Search clients…"
@@ -153,7 +153,7 @@ export default function ClientsPage() {
                     onClick={() => setShowAddModal(true)}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm"
                     style={{
-                      background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      background: "linear-gradient(135deg, #6b8e7f 0%, #7fa592 100%)",
                       boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25)",
                     }}
                   >

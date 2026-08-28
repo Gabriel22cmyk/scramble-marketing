@@ -641,18 +641,18 @@ export default function ClientDetailPage({
   ) as "indigo" | "purple" | "green";
 
   return (
-    <div className="min-h-screen" style={{ background: "#f8fdfe" }}>
-      <section className="pt-28 pb-8 px-6" style={{ background: "linear-gradient(180deg, #f0f9fc 0%, #f8fdfe 100%)" }}>
+    <div className="min-h-screen" style={{ background: "#1a2e2a" }}>
+      <section className="pt-28 pb-8 px-6" style={{ background: "linear-gradient(180deg, #1f3a35 0%, #1a2e2a 100%)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#0891b2" }}>
+            <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#6b8e7f" }}>
               <ArrowLeft className="w-4 h-4" /> Back to Clients
             </Link>
           </div>
           <div className="flex items-end justify-between">
             <div>
-              <h1 className="text-3xl font-extrabold mb-1" style={{ color: "#1e293b", letterSpacing: "-0.5px" }}>{client.name}</h1>
-              <p className="text-base" style={{ color: "#64748b" }}>{client.domain} · {getPackageLabel(client.package)}</p>
+              <h1 className="text-3xl font-extrabold mb-1" style={{ color: "#f5f5f0", letterSpacing: "-0.5px" }}>{client.name}</h1>
+              <p className="text-base" style={{ color: "#a8a89d" }}>{client.domain} · {getPackageLabel(client.package)}</p>
             </div>
             <button
               onClick={() => setShowReport(true)}

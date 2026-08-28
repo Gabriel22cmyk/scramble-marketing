@@ -43,7 +43,7 @@ const DEFAULT_SERVICES: ServiceHealth[] = [
 function StatusIcon({ status }: { status: "ok" | "error" | "unknown" }) {
   if (status === "ok") return <CheckCircle className="w-5 h-5 text-green-500" />;
   if (status === "error") return <XCircle className="w-5 h-5 text-red-500" />;
-  return <HelpCircle className="w-5 h-5" style={{ color: "#94a3b8" }} />;
+  return <HelpCircle className="w-5 h-5" style={{ color: "#7a7a70" }} />;
 }
 
 export default function SettingsPage() {
@@ -77,7 +77,7 @@ export default function SettingsPage() {
       <section
         className="text-center"
         style={{
-          background: "linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 50%, #e0f2fe 100%)",
+          background: "linear-gradient(135deg, #1a2e2a 0%, #1f3a35 50%, #243633 100%)",
           paddingTop: "180px",
           paddingBottom: "64px",
         }}
@@ -85,18 +85,18 @@ export default function SettingsPage() {
         <div className="max-w-2xl mx-auto px-6">
           <h1
             className="text-4xl font-extrabold mb-3"
-            style={{ color: "#1e293b", letterSpacing: "-0.5px" }}
+            style={{ color: "#f5f5f0", letterSpacing: "-0.5px" }}
           >
             Settings
           </h1>
-          <p className="text-lg" style={{ color: "#64748b" }}>
+          <p className="text-lg" style={{ color: "#a8a89d" }}>
             Manage API connections and integrations
           </p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-12 px-6" style={{ background: "#f8fdfe" }}>
+      <section className="py-12 px-6" style={{ background: "#1a2e2a" }}>
         <div className="max-w-4xl mx-auto">
           <div
             className="p-8 rounded-2xl"
@@ -112,15 +112,15 @@ export default function SettingsPage() {
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
                   style={{
-                    background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    background: "linear-gradient(135deg, #6b8e7f 0%, #7fa592 100%)",
                     boxShadow: "0 2px 10px rgba(8, 145, 178, 0.25)",
                   }}
                 >
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold" style={{ color: "#1e293b" }}>API Connections</h2>
-                  <p className="text-sm" style={{ color: "#64748b" }}>
+                  <h2 className="text-xl font-bold" style={{ color: "#f5f5f0" }}>API Connections</h2>
+                  <p className="text-sm" style={{ color: "#a8a89d" }}>
                     Connect your Google account to pull live client data
                   </p>
                 </div>
@@ -138,7 +138,7 @@ export default function SettingsPage() {
                   style={{
                     background: "rgba(255,255,255,0.6)",
                     backdropFilter: "blur(10px)",
-                    color: "#0891b2",
+                    color: "#6b8e7f",
                     border: "1px solid rgba(8,145,178,0.2)",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                   }}
@@ -161,20 +161,20 @@ export default function SettingsPage() {
                       key={svc.connectionId}
                       className="flex items-center gap-5 p-5 rounded-xl transition-all"
                       style={{
-                        background: "#f8fdfe",
+                        background: "#1a2e2a",
                         border: "1px solid rgba(0,0,0,0.04)",
                       }}
                     >
                       <span className="text-2xl flex-shrink-0">{info?.icon ?? "🔗"}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-base font-semibold" style={{ color: "#1e293b" }}>{svc.service}</p>
+                          <p className="text-base font-semibold" style={{ color: "#f5f5f0" }}>{svc.service}</p>
                           <StatusIcon status={svc.status} />
                           {svc.latencyMs !== undefined && (
-                            <span className="text-xs" style={{ color: "#94a3b8" }}>{svc.latencyMs}ms</span>
+                            <span className="text-xs" style={{ color: "#7a7a70" }}>{svc.latencyMs}ms</span>
                           )}
                         </div>
-                        <p className="text-sm mt-0.5" style={{ color: "#64748b" }}>{info?.description}</p>
+                        <p className="text-sm mt-0.5" style={{ color: "#a8a89d" }}>{info?.description}</p>
                         {svc.message && (
                           <p className="text-sm text-red-500 mt-1">{svc.message}</p>
                         )}
@@ -191,13 +191,13 @@ export default function SettingsPage() {
             )}
 
             {health?.checkedAt && (
-              <p className="text-sm mt-5 text-right" style={{ color: "#94a3b8" }}>
+              <p className="text-sm mt-5 text-right" style={{ color: "#7a7a70" }}>
                 Last checked {new Date(health.checkedAt).toLocaleTimeString()}
               </p>
             )}
           </div>
 
-          <p className="text-center text-sm font-medium mt-8" style={{ color: "#94a3b8" }}>
+          <p className="text-center text-sm font-medium mt-8" style={{ color: "#7a7a70" }}>
             Scramble Marketing Hub · v1.0.0
           </p>
         </div>
