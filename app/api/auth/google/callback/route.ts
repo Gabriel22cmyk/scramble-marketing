@@ -46,11 +46,16 @@ export async function GET(request: NextRequest) {
       refresh_token,
       expires_in,
       scope,
+      id_token,
     } = tokenResponse
 
-    // Get Google account info from access token
-    const googleProfile = await getGoogleProfile(access_token)
-    if (!googleProfile) {
+    // Get Google account info. Try the userinfo endpoint first; if that fails,
+    // fall back to decoding the OIDC id_token (which contains email + sub).
+    let googleProfile = await getGoogleProfile(access_token)
+    if (!googleProfile && id_token) {
+      googleProfile = decodeIdToken(id_token)
+    }
+    if (!googleProfile || !googleProfile.email) {
       return NextResponse.redirect(
         `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=profile_fetch_failed`
       )
@@ -146,11 +151,12 @@ async function exchangeCodeForToken(code: string) {
 }
 
 /**
- * Fetch Google profile info (email, id)
+ * Fetch Google profile info (email, id) via the OIDC userinfo endpoint.
  */
 async function getGoogleProfile(accessToken: string) {
   try {
-    const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    // Use the OpenID Connect userinfo endpoint (works with userinfo.email scope)
+    const response = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
 
@@ -161,11 +167,33 @@ async function getGoogleProfile(accessToken: string) {
     const data = await response.json()
     return {
       email: data.email,
-      id: data.id,
+      id: data.sub || data.id,
       name: data.name,
     }
   } catch (error) {
     console.error('[Google profile fetch]', error)
+    return null
+  }
+}
+
+/**
+ * Decode the email + sub from a Google OIDC id_token (JWT) without verifying
+ * the signature. Safe here because the token came directly from Google's
+ * token endpoint over HTTPS in this same request.
+ */
+function decodeIdToken(idToken: string) {
+  try {
+    const payload = idToken.split('.')[1]
+    const decoded = JSON.parse(
+      Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8')
+    )
+    return {
+      email: decoded.email as string,
+      id: (decoded.sub || decoded.email) as string,
+      name: (decoded.name || '') as string,
+    }
+  } catch (error) {
+    console.error('[decode id_token]', error)
     return null
   }
 }
