@@ -59,21 +59,37 @@ function OnboardingInner() {
   const handleConnectGoogle = async () => {
     setConnecting(true);
     setOauthError("");
+
+    // Resolve email: prefer state, else the live session, else the URL param.
+    let clientEmail = email;
+    if (!clientEmail) {
+      const { data } = await authClient.auth.getUser();
+      clientEmail = data.user?.email || new URLSearchParams(window.location.search).get("email") || "";
+      if (clientEmail) setEmail(clientEmail);
+    }
+
+    if (!clientEmail) {
+      setOauthError("We couldn't find your session. Please sign in again.");
+      setConnecting(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/auth/google/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: email }),
+        body: JSON.stringify({ clientId: clientEmail }),
       });
       const data = await res.json();
-      if (data.authUrl) {
+      if (res.ok && data.authUrl) {
         window.location.href = data.authUrl;
       } else {
-        setOauthError("Could not start Google connection.");
+        setOauthError(data.error || "Could not start Google connection.");
         setConnecting(false);
       }
-    } catch {
-      setOauthError("Could not start Google connection.");
+    } catch (err) {
+      console.error("[connect google]", err);
+      setOauthError("Could not start Google connection. Please try again.");
       setConnecting(false);
     }
   };
