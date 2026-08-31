@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { isAdminEmail } from "@/lib/admin";
 import { SCRAMBLE_THEME } from "@/lib/scramble-theme";
 import { SERVICE_META, ServiceKey } from "@/lib/tiers";
 
@@ -27,21 +30,49 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("");
 
   useEffect(() => {
     (async () => {
+      // Gate: only the Scramble team email can view this dashboard.
+      const { data } = await authClient.auth.getUser();
+      const email = data.user?.email;
+
+      if (!isAdminEmail(email)) {
+        router.replace("/admin-login");
+        return;
+      }
+      setAdminEmail(email || "");
+      setAuthorized(true);
+
       const res = await fetch("/api/scramble/clients");
       if (res.ok) {
-        const data = await res.json();
-        setClients(data.clients || []);
-        setStats(data.stats || null);
+        const d = await res.json();
+        setClients(d.clients || []);
+        setStats(d.stats || null);
       }
       setLoading(false);
     })();
-  }, []);
+  }, [router]);
+
+  const handleSignOut = async () => {
+    await authClient.auth.signOut();
+    router.push("/admin-login");
+  };
+
+  if (!authorized) {
+    return (
+      <div className="sc-root" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <style>{SCRAMBLE_THEME}</style>
+        <p style={{ color: "#5a6b82" }}>Checking access...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="sc-root">
@@ -61,7 +92,8 @@ export default function AdminDashboard() {
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             <span className="admin-nav-badge">Admin</span>
-            <Link href="/landing" className="sc-link" style={{ fontSize: 15 }}>View site →</Link>
+            <Link href="/landing" className="sc-link" style={{ fontSize: 15 }}>View site</Link>
+            <button onClick={handleSignOut} className="admin-signout">Sign out</button>
           </div>
         </div>
       </nav>
@@ -165,6 +197,12 @@ const adminStyles = `
     font-size: 12px; font-weight: 700; color: #2d7fe0;
     background: rgba(74, 158, 255, 0.12); padding: 5px 12px; border-radius: 999px;
   }
+  .admin-signout {
+    background: rgba(74, 158, 255, 0.1); color: #2d7fe0; border: none;
+    padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .admin-signout:hover { background: rgba(74, 158, 255, 0.18); }
   .admin-wrap { max-width: 1080px; margin: 0 auto; padding: 120px 28px 80px; }
   .admin-header { margin-bottom: 36px; }
   .sc-eyebrow-admin {
