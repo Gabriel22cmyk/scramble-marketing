@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
       isExpired,
       lastUsed: data.last_used_at,
       hasScopes: {
-        searchConsole: scopes.some((s: string) => s.includes('search_console')),
+        searchConsole: scopes.some((s: string) => s.includes('webmasters')),
         analyticsReadonly: scopes.some((s: string) => s.includes('analytics.readonly')),
-        analyticsManage: scopes.some((s: string) => s.includes('analytics.manage')),
+        analyticsManage: scopes.some((s: string) => s.includes('analytics.edit')),
         ads: scopes.some((s: string) => s.includes('adwords')),
       },
     })

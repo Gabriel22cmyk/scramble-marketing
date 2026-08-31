@@ -31,9 +31,9 @@ export async function POST(request: NextRequest) {
     }
 
     const scopes = [
-      'https://www.googleapis.com/auth/search_console', // Search Console
+      'https://www.googleapis.com/auth/webmasters.readonly', // Search Console (API name is "webmasters")
       'https://www.googleapis.com/auth/analytics.readonly', // Google Analytics (read)
-      'https://www.googleapis.com/auth/analytics.manage', // Google Analytics Admin
+      'https://www.googleapis.com/auth/analytics.edit', // Google Analytics Admin (manage)
       'https://www.googleapis.com/auth/adwords', // Google Ads
     ].join(' ')
 
