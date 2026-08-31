@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
     // User denied access
     if (error) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=${encodeURIComponent(error)}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=${encodeURIComponent(error)}`
       )
     }
 
     if (!code || !state) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=missing_code_or_state`
+        `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=missing_code_or_state`
       )
     }
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     const tokenResponse = await exchangeCodeForToken(code)
     if (!tokenResponse) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=token_exchange_failed`
+        `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=token_exchange_failed`
       )
     }
 
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const googleProfile = await getGoogleProfile(access_token)
     if (!googleProfile) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=profile_fetch_failed`
+        `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=profile_fetch_failed`
       )
     }
 
@@ -81,9 +81,15 @@ export async function GET(request: NextRequest) {
     if (upsertError) {
       console.error('[OAuth callback] Supabase upsert failed:', upsertError)
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=db_error`
+        `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=db_error`
       )
     }
+
+    // Mark the client's profile as google_connected (best-effort)
+    await supabase
+      .from('scramble_users')
+      .update({ google_connected: true, updated_at: new Date().toISOString() })
+      .eq('email', clientId)
 
     // Log success
     await logAuditEvent(supabase, clientId, 'oauth_connected', {
@@ -91,14 +97,14 @@ export async function GET(request: NextRequest) {
       scopes: scope.split(' '),
     })
 
-    // Redirect back to settings with success
+    // Redirect back to onboarding with success
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_success=true&email=${encodeURIComponent(googleProfile.email)}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_success=true&email=${encodeURIComponent(clientId)}`
     )
   } catch (error) {
     console.error('[OAuth callback]', error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/settings?oauth_error=internal_error`
+      `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?oauth_error=internal_error`
     )
   }
 }
