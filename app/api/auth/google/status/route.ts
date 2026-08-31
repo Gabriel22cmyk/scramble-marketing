@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
       isExpired,
       lastUsed: data.last_used_at,
       hasScopes: {
-        searchConsole: scopes.some(s => s.includes('search_console')),
-        analyticsReadonly: scopes.some(s => s.includes('analytics.readonly')),
-        analyticsManage: scopes.some(s => s.includes('analytics.manage')),
-        ads: scopes.some(s => s.includes('adwords')),
+        searchConsole: scopes.some((s: string) => s.includes('search_console')),
+        analyticsReadonly: scopes.some((s: string) => s.includes('analytics.readonly')),
+        analyticsManage: scopes.some((s: string) => s.includes('analytics.manage')),
+        ads: scopes.some((s: string) => s.includes('adwords')),
       },
     })
   } catch (error) {

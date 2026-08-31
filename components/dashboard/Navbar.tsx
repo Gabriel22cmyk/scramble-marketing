@@ -10,8 +10,17 @@ const NAV_ITEMS = [
   { href: "/settings", label: "Settings" },
 ];
 
+// Public/marketing routes that render their own chrome and should NOT show
+// the internal dashboard navbar.
+const PUBLIC_ROUTES = ["/landing", "/pricing", "/auth", "/onboarding"];
+
 export default function Navbar() {
   const pathname = usePathname();
+
+  // Hide the dashboard navbar on public/marketing pages
+  if (PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/") || pathname.startsWith(r))) {
+    return null;
+  }
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
