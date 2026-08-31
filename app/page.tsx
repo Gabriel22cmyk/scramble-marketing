@@ -1,359 +1,249 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { Suspense } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Users,
-  AlertCircle,
-  Plus,
-  ArrowRight,
-  Settings,
-  BarChart3,
-  Zap,
-  ArrowUpRight,
-} from "lucide-react";
-import AlertsPanel from "@/components/dashboard/AlertsPanel";
-import { SkeletonBlock } from "@/components/ui/LoadingSpinner";
-import { readClients } from "@/lib/clients-store";
-import { getAllAlerts, getSetupProgress } from "@/lib/alerts";
-import { getPackageLabel } from "@/lib/utils";
-import Badge from "@/components/ui/Badge";
+import { SCRAMBLE_THEME } from "@/lib/scramble-theme";
+import { SERVICE_META, ServiceKey } from "@/lib/tiers";
 
-/* ═══════════════════════════════════════════════════════
-   EMPTY STATE — Hero + onboarding cards
-   ═══════════════════════════════════════════════════════ */
+interface Client {
+  id: string;
+  email: string;
+  company_name: string;
+  tier: "seo" | "ads" | "full";
+  services: ServiceKey[];
+  onboarding_complete: boolean;
+  google_connected: boolean;
+  created_at: string;
+  is_active: boolean;
+}
 
-function EmptyDashboard() {
+interface Stats {
+  total: number;
+  connected: number;
+  onboarding: number;
+  seo: number;
+  ads: number;
+  full: number;
+}
+
+export default function AdminDashboard() {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/scramble/clients");
+      if (res.ok) {
+        const data = await res.json();
+        setClients(data.clients || []);
+        setStats(data.stats || null);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
   return (
-    <>
-      {/* Hero */}
-      <section
-        className="text-center relative"
-        style={{
-          background: "linear-gradient(135deg, #1a2e2a 0%, #1f3a35 25%, #243633 50%, #243633 75%, #1a2e2a 100%)",
-          backgroundSize: "200% 200%",
-          animation: "pearlShift 12s ease-in-out infinite",
-          paddingTop: "180px",
-          paddingBottom: "96px",
-          overflow: "hidden",
-        }}
-      >
-        {/* Radial overlays — decorative only, isolated so it never clips text */}
-        <div
-          className="pointer-events-none"
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "radial-gradient(ellipse at 25% 50%, rgba(8, 145, 178, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 75% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%)",
-            zIndex: 0,
-          }}
-        />
+    <div className="sc-root">
+      <style>{SCRAMBLE_THEME}</style>
+      <style>{adminStyles}</style>
 
-        <div className="relative z-10 max-w-3xl mx-auto px-6">
-          {/* Badge */}
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-8"
-            style={{
-              background: "rgba(255, 255, 255, 0.8)",
-              backdropFilter: "blur(10px)",
-              color: "#6b8e7f",
-              boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
-              border: "1px solid rgba(255,255,255,0.5)",
-            }}
-          >
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            System Online
-          </div>
-
-          <h1
-            className="text-5xl font-extrabold mb-5"
-            style={{ color: "#f5f5f0", letterSpacing: "-1px", lineHeight: 1.1, textAlign: "center" }}
-          >
-            Your Marketing{" "}
-            <span style={{ color: "#6b8e7f" }}>Operations Hub</span>
-          </h1>
-          <p className="text-xl mb-10 max-w-xl mx-auto" style={{ color: "#a8a89d", lineHeight: 1.7, textAlign: "center" }}>
-            Add clients, connect APIs, and let Scramble handle SEO tracking, reporting, and campaign management.
-          </p>
-
-          {/* Hero buttons */}
-          <div className="flex items-center justify-center gap-4">
-            <Link
-              href="/clients"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-white font-semibold text-base transition-all hover:-translate-y-0.5"
-              style={{
-                background: "linear-gradient(135deg, #6b8e7f 0%, #7fa592 100%)",
-                boxShadow: "0 4px 14px rgba(8, 145, 178, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
-              }}
-            >
-              <Plus className="w-5 h-5" />
-              Add First Client
-            </Link>
-            <Link
-              href="/settings"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-base transition-all hover:-translate-y-0.5"
-              style={{
-                background: "rgba(255, 255, 255, 0.6)",
-                backdropFilter: "blur(10px)",
-                color: "#6b8e7f",
-                border: "1px solid rgba(8, 145, 178, 0.2)",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
-              }}
-            >
-              Connect APIs
-            </Link>
+      {/* Nav */}
+      <nav className="sc-nav">
+        <div className="sc-nav-inner">
+          <Link href="/" className="sc-logo">
+            <div className="sc-logo-mark">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L4.5 12.5H11L9 22L18.5 10.5H12L13 2Z" fill="white" />
+              </svg>
+            </div>
+            <span className="sc-logo-text">Scramble</span>
+          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <span className="admin-nav-badge">Admin</span>
+            <Link href="/landing" className="sc-link" style={{ fontSize: 15 }}>View site →</Link>
           </div>
         </div>
-      </section>
+      </nav>
 
-      {/* What You Need */}
-      <section
-        className="py-20 text-center"
-        style={{ background: "linear-gradient(180deg, #1a2e2a 0%, #1f3a35 50%, #1a2e2a 100%)" }}
-      >
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "#f5f5f0", textAlign: "center" }}>
-              Everything You Need
-            </h2>
-            <p className="text-lg" style={{ color: "#a8a89d", maxWidth: 550, margin: "0 auto", textAlign: "center" }}>
-              Track SEO, manage clients, and generate reports — all in one place
+      <div className="admin-wrap">
+        {/* Header */}
+        <div className="admin-header">
+          <div>
+            <div className="sc-eyebrow-admin">Operations Hub</div>
+            <h1 className="admin-title">Client Management</h1>
+            <p className="admin-subtitle">
+              Clients onboard themselves via the signup flow. Monitor connections and services here.
             </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: <Users className="w-6 h-6" />,
-                title: "Client Management",
-                desc: "Add clients with goals, budgets, and business briefs. Track onboarding progress.",
-                active: true,
-              },
-              {
-                icon: <Settings className="w-6 h-6" />,
-                title: "API Integrations",
-                desc: "Google Search Console, Analytics, and Ads — pull live performance data.",
-                active: true,
-              },
-              {
-                icon: <BarChart3 className="w-6 h-6" />,
-                title: "Automated Reports",
-                desc: "Weekly and monthly reports generated automatically for every client.",
-                active: false,
-              },
-              {
-                icon: <Zap className="w-6 h-6" />,
-                title: "Rank Monitoring",
-                desc: "Keyword position tracking with alerts when rankings drop or climb.",
-                active: false,
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="text-center p-8 rounded-2xl transition-all hover:-translate-y-1.5"
-                style={{
-                  background: "white",
-                  border: "1px solid rgba(0, 0, 0, 0.06)",
-                  borderRadius: "20px",
-                  boxShadow: "0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04)",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  className="w-12 h-12 rounded-xl mx-auto mb-5 flex items-center justify-center"
-                  style={{
-                    background: item.active ? "rgba(8, 145, 178, 0.08)" : "rgba(0,0,0,0.03)",
-                    color: item.active ? "#6b8e7f" : "#7a7a70",
-                  }}
-                >
-                  {item.icon}
+        {/* Stats row */}
+        {stats && (
+          <div className="admin-stats">
+            <div className="admin-stat">
+              <div className="admin-stat-value">{stats.total}</div>
+              <div className="admin-stat-label">Total Clients</div>
+            </div>
+            <div className="admin-stat">
+              <div className="admin-stat-value" style={{ color: "#34c77b" }}>{stats.connected}</div>
+              <div className="admin-stat-label">Google Connected</div>
+            </div>
+            <div className="admin-stat">
+              <div className="admin-stat-value" style={{ color: "#e89b1f" }}>{stats.onboarding}</div>
+              <div className="admin-stat-label">Onboarding</div>
+            </div>
+            <div className="admin-stat">
+              <div className="admin-stat-value">{stats.full}</div>
+              <div className="admin-stat-label">Full Package</div>
+            </div>
+          </div>
+        )}
+
+        {/* Client list */}
+        <div className="admin-section-head">
+          <h2>Onboarded Clients</h2>
+          <span className="admin-count">{clients.length}</span>
+        </div>
+
+        {loading ? (
+          <div className="admin-empty">Loading clients...</div>
+        ) : clients.length === 0 ? (
+          <div className="admin-empty">
+            <div className="admin-empty-icon">👥</div>
+            <h3>No clients yet</h3>
+            <p>When clients sign up and onboard, they'll appear here automatically.</p>
+          </div>
+        ) : (
+          <div className="admin-clients">
+            {clients.map((client) => (
+              <div className="admin-client-card" key={client.id}>
+                <div className="admin-client-main">
+                  <div className="admin-client-avatar">
+                    {client.company_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="admin-client-info">
+                    <div className="admin-client-name">{client.company_name}</div>
+                    <div className="admin-client-email">{client.email}</div>
+                  </div>
                 </div>
-                <h3 className="text-base font-bold mb-2" style={{ color: "#f5f5f0", textAlign: "center" }}>
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#a8a89d", textAlign: "center" }}>
-                  {item.desc}
-                </p>
-                {!item.active && (
-                  <span
-                    className="inline-block mt-3 text-xs font-semibold px-3 py-1 rounded-full"
-                    style={{ background: "rgba(0,0,0,0.04)", color: "#7a7a70" }}
-                  >
-                    Coming Soon
-                  </span>
-                )}
+
+                <div className="admin-client-services">
+                  {(client.services || []).map((s) => (
+                    <span className="admin-service-pill" key={s} title={SERVICE_META[s]?.label}>
+                      {SERVICE_META[s]?.icon}
+                    </span>
+                  ))}
+                </div>
+
+                <div className={`admin-tier-badge tier-${client.tier}`}>
+                  {client.tier === "full" ? "Full Package" : client.tier.toUpperCase()}
+                </div>
+
+                <div className="admin-client-status">
+                  {client.google_connected ? (
+                    <span className="admin-status connected">
+                      <span className="admin-status-dot" /> Connected
+                    </span>
+                  ) : (
+                    <span className="admin-status pending">
+                      <span className="admin-status-dot" /> Not connected
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-    </>
+        )}
+      </div>
+    </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════
-   DASHBOARD WITH CLIENTS
-   ═══════════════════════════════════════════════════════ */
+const adminStyles = `
+  .admin-nav-badge {
+    font-size: 12px; font-weight: 700; color: #2d7fe0;
+    background: rgba(74, 158, 255, 0.12); padding: 5px 12px; border-radius: 999px;
+  }
+  .admin-wrap { max-width: 1080px; margin: 0 auto; padding: 120px 28px 80px; }
+  .admin-header { margin-bottom: 36px; }
+  .sc-eyebrow-admin {
+    display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #4a9eff; margin-bottom: 10px;
+  }
+  .admin-title { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+  .admin-subtitle { font-size: 16px; color: #5a6b82; max-width: 560px; }
 
-function DashboardContent() {
-  const clients = readClients();
-  const activeClients = clients.filter((c) => c.status === "active" || c.status === "onboarding");
-  const allAlerts = getAllAlerts(clients);
-  const criticalCount = allAlerts.filter((a) => a.severity === "critical").length;
+  .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 44px; }
+  .admin-stat {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+    border: 1px solid rgba(122, 178, 255, 0.16); border-radius: 18px; padding: 24px;
+    box-shadow: 0 10px 26px rgba(45, 127, 224, 0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .admin-stat-value { font-size: 36px; font-weight: 800; letter-spacing: -1.5px; color: #16243a; }
+  .admin-stat-label { font-size: 14px; color: #8a97ab; font-weight: 500; margin-top: 4px; }
 
-  if (clients.length === 0) {
-    return <EmptyDashboard />;
+  .admin-section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .admin-section-head h2 { font-size: 20px; font-weight: 700; color: #16243a; }
+  .admin-count {
+    font-size: 13px; font-weight: 700; color: #2d7fe0;
+    background: rgba(74, 158, 255, 0.12); padding: 3px 11px; border-radius: 999px;
   }
 
-  return (
-    <>
-      {/* Header section — centered hero */}
-      <section
-        className="text-center"
-        style={{
-          background: "linear-gradient(135deg, #1a2e2a 0%, #1f3a35 50%, #243633 100%)",
-          paddingTop: "180px",
-          paddingBottom: "64px",
-        }}
-      >
-        <div className="max-w-2xl mx-auto px-6">
-          <h1 className="text-4xl font-extrabold mb-3" style={{ color: "#f5f5f0", letterSpacing: "-0.5px", textAlign: "center" }}>
-            Dashboard
-          </h1>
-          <p className="text-lg" style={{ color: "#a8a89d", textAlign: "center" }}>
-            {activeClients.length} active client{activeClients.length !== 1 ? "s" : ""} · {allAlerts.length} alert{allAlerts.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-      </section>
+  .admin-empty {
+    text-align: center; padding: 70px 28px; color: #8a97ab;
+    background: rgba(255,255,255,0.7); border: 1px dashed rgba(122, 178, 255, 0.3);
+    border-radius: 20px;
+  }
+  .admin-empty-icon { font-size: 44px; margin-bottom: 16px; }
+  .admin-empty h3 { font-size: 20px; font-weight: 700; color: #16243a; margin-bottom: 8px; }
+  .admin-empty p { font-size: 15px; }
 
-      {/* Stats */}
-      <section className="py-12 px-6" style={{ background: "#1a2e2a" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              { label: "Total Clients", value: clients.length, color: "#6b8e7f" },
-              { label: "Active", value: activeClients.length, color: "#16a34a" },
-              { label: "Alerts", value: allAlerts.length, color: criticalCount > 0 ? "#ef4444" : "#f59e0b" },
-              { label: "Critical", value: criticalCount, color: "#ef4444" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="p-6 rounded-2xl text-center"
-                style={{
-                  background: "white",
-                  border: "1px solid rgba(0,0,0,0.06)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
-                  textAlign: "center",
-                }}
-              >
-                <p className="text-sm font-semibold mb-1" style={{ color: "#a8a89d" }}>{stat.label}</p>
-                <p className="text-3xl font-extrabold" style={{ color: stat.color }}>{stat.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+  .admin-clients { display: flex; flex-direction: column; gap: 14px; }
+  .admin-client-card {
+    display: flex; align-items: center; gap: 20px;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+    border: 1px solid rgba(122, 178, 255, 0.16); border-radius: 18px; padding: 20px 24px;
+    box-shadow: 0 8px 22px rgba(45, 127, 224, 0.05), inset 0 1px 0 rgba(255,255,255,0.9);
+    transition: all 0.3s;
+  }
+  .admin-client-card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(45, 127, 224, 0.12); }
 
-      {/* Clients + Alerts */}
-      <section className="py-12 px-6" style={{ background: "linear-gradient(180deg, #1a2e2a 0%, #243633 100%)" }}>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Alerts */}
-          {allAlerts.length > 0 && (
-            <div className="lg:col-span-2">
-              <div
-                className="p-7 rounded-2xl"
-                style={{
-                  background: "white",
-                  border: "1px solid rgba(0,0,0,0.06)",
-                  boxShadow: "0 6px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)",
-                }}
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" style={{ color: criticalCount > 0 ? "#ef4444" : "#f59e0b" }} />
-                    <h2 className="text-lg font-bold" style={{ color: "#f5f5f0" }}>Action Needed</h2>
-                  </div>
-                  <span
-                    className="text-xs font-bold px-3 py-1 rounded-full"
-                    style={{
-                      background: criticalCount > 0 ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)",
-                      color: criticalCount > 0 ? "#ef4444" : "#f59e0b",
-                    }}
-                  >
-                    {allAlerts.length} open
-                  </span>
-                </div>
-                <AlertsPanel alerts={allAlerts} />
-              </div>
-            </div>
-          )}
+  .admin-client-main { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+  .admin-client-avatar {
+    width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800; color: white;
+    background: linear-gradient(135deg, #4a9eff 0%, #2d7fe0 100%);
+    box-shadow: 0 6px 16px rgba(74, 158, 255, 0.3);
+  }
+  .admin-client-name { font-size: 16px; font-weight: 700; color: #16243a; }
+  .admin-client-email { font-size: 14px; color: #8a97ab; }
 
-          {/* Client list */}
-          <div>
-            <div
-              className="p-7 rounded-2xl"
-              style={{
-                background: "white",
-                border: "1px solid rgba(0,0,0,0.06)",
-                boxShadow: "0 6px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)",
-              }}
-            >
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-lg font-bold" style={{ color: "#f5f5f0" }}>Clients</h2>
-                <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#6b8e7f" }}>
-                  View all <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
+  .admin-client-services { display: flex; gap: 6px; }
+  .admin-service-pill {
+    width: 34px; height: 34px; border-radius: 10px; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(74, 158, 255, 0.08); border: 1px solid rgba(122, 178, 255, 0.14);
+  }
 
-              <div className="space-y-2">
-                {clients.map((client) => {
-                  const initials = client.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
-                  return (
-                    <Link key={client.id} href={`/clients/${client.id}`}>
-                      <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                        <div
-                          className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                          style={{ background: "linear-gradient(135deg, #6b8e7f 0%, #7fa592 100%)" }}
-                        >
-                          {initials}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold group-hover:text-cyan-600 transition-colors truncate" style={{ color: "#f5f5f0" }}>
-                            {client.name}
-                          </p>
-                          <p className="text-xs truncate" style={{ color: "#7a7a70" }}>{client.domain}</p>
-                        </div>
-                        <Badge
-                          variant={client.package === "seo" ? "indigo" : client.package === "seo-ads" ? "purple" : "green"}
-                        >
-                          {getPackageLabel(client.package)}
-                        </Badge>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
+  .admin-tier-badge {
+    font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; white-space: nowrap;
+  }
+  .tier-seo { background: rgba(74, 158, 255, 0.12); color: #2d7fe0; }
+  .tier-ads { background: rgba(244, 185, 66, 0.15); color: #c77f0a; }
+  .tier-full { background: linear-gradient(135deg, rgba(74,158,255,0.15), rgba(244,185,66,0.15)); color: #2d7fe0; }
 
-export default function DashboardPage() {
-  return (
-    <Suspense
-      fallback={
-        <section className="pt-32 pb-20 px-6">
-          <div className="max-w-5xl mx-auto space-y-6">
-            <SkeletonBlock className="h-12 w-64 mx-auto" />
-            <SkeletonBlock className="h-6 w-96 mx-auto" />
-          </div>
-        </section>
-      }
-    >
-      <DashboardContent />
-    </Suspense>
-  );
-}
+  .admin-client-status { min-width: 130px; text-align: right; }
+  .admin-status { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+  .admin-status.connected { color: #1a8a4f; }
+  .admin-status.pending { color: #c0392b; }
+  .admin-status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  @media (max-width: 760px) {
+    .admin-stats { grid-template-columns: repeat(2, 1fr); }
+    .admin-client-card { flex-wrap: wrap; gap: 14px; }
+    .admin-client-status { min-width: auto; text-align: left; }
+    .admin-title { font-size: 28px; }
+  }
+`;

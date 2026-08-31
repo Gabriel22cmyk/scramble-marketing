@@ -17,8 +17,12 @@ const PUBLIC_ROUTES = ["/landing", "/pricing", "/auth", "/onboarding", "/dashboa
 export default function Navbar() {
   const pathname = usePathname();
 
-  // Hide the dashboard navbar on public/marketing pages
-  if (PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/") || pathname.startsWith(r))) {
+  // Hide the dashboard navbar on public/marketing pages AND the admin root
+  // (both render their own branded nav).
+  if (
+    pathname === "/" ||
+    PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/") || pathname.startsWith(r))
+  ) {
     return null;
   }
 
