@@ -43,7 +43,8 @@ export async function POST(request: NextRequest) {
       response_type: 'code',
       scope: scopes,
       access_type: 'offline',
-      prompt: 'consent', // force re-consent to get refresh token
+      prompt: 'select_account consent', // always show account picker + re-consent (refresh token)
+      include_granted_scopes: 'true',
       state: encodeURIComponent(clientId), // pass clientId as state for security
     })
 
