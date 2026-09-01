@@ -11,6 +11,7 @@ function OnboardingInner() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [company, setCompany] = useState<string>("");
+  const [siteUrl, setSiteUrl] = useState<string>("");
   const [tier, setTier] = useState<TierKey>("full");
   const [services, setServices] = useState<ServiceKey[]>([]);
   const [googleConnected, setGoogleConnected] = useState(false);
@@ -40,6 +41,7 @@ function OnboardingInner() {
         if (res.ok) {
           const profile = await res.json();
           setCompany(profile.company_name || "");
+          setSiteUrl(profile.site_url || "");
           setTier(profile.tier || "full");
           setServices(profile.services || servicesForTier(profile.tier || "full"));
           setGoogleConnected(profile.google_connected || false);
@@ -95,11 +97,16 @@ function OnboardingInner() {
   };
 
   const handleFinish = async () => {
-    // Mark onboarding complete
+    // Mark onboarding complete and save site URL
     await fetch("/api/scramble/me", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, onboarding_complete: true, google_connected: true }),
+      body: JSON.stringify({
+        email,
+        onboarding_complete: true,
+        google_connected: true,
+        site_url: siteUrl || null,
+      }),
     });
     router.push("/dashboard");
   };
@@ -170,6 +177,24 @@ function OnboardingInner() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* Website URL — collected before Google connect */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#3d5a6e", marginBottom: 6 }}>
+                  Your Website URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://example.com"
+                  value={siteUrl}
+                  onChange={(e) => setSiteUrl(e.target.value)}
+                  className="sc-input"
+                  style={{ width: "100%" }}
+                />
+                <p style={{ fontSize: "0.75rem", color: "#5a6b82", marginTop: 4 }}>
+                  We&apos;ll use this to find your Search Console property automatically.
+                </p>
               </div>
 
               {oauthError && <div className="sc-error" style={{ marginBottom: 20 }}>{oauthError}</div>}
