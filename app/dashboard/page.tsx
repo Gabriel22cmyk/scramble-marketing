@@ -115,9 +115,18 @@ export default function ClientDashboard() {
               <h3>Connect your Google account to see live data</h3>
               <p>Your dashboards are ready — connect Google to start pulling your data.</p>
             </div>
-            <Link href="/onboarding" className="dash-connect-btn">Connect now →</Link>
+            <Link href="/onboarding" className="dash-connect-btn">Connect Google →</Link>
           </div>
         )}
+
+        {/* Meta connect prompt */}
+        <div className="dash-connect-banner dash-connect-meta">
+          <div>
+            <h3>Connect Meta to track Facebook &amp; Instagram Ads</h3>
+            <p>See ad spend, clicks, conversions, and ROAS from your Meta campaigns.</p>
+          </div>
+          <Link href="/onboarding" className="dash-connect-btn dash-connect-btn-meta">Connect Meta →</Link>
+        </div>
 
         {/* Service dashboards */}
         <div className="dash-services">
@@ -243,6 +252,16 @@ const dashStyles = `
     transition: all 0.3s;
   }
   .dash-connect-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(74, 158, 255, 0.45); }
+
+  .dash-connect-meta {
+    background: linear-gradient(135deg, rgba(24,119,242,0.08), rgba(66,103,178,0.08));
+    border: 1px solid rgba(24,119,242,0.2);
+  }
+  .dash-connect-btn-meta {
+    background: linear-gradient(135deg, #1877F2 0%, #1565C0 100%);
+    box-shadow: 0 8px 20px rgba(24, 119, 242, 0.35);
+  }
+  .dash-connect-btn-meta:hover { box-shadow: 0 12px 28px rgba(24, 119, 242, 0.45); }
 
   .dash-services { display: flex; flex-direction: column; gap: 24px; }
   .service-dash {
