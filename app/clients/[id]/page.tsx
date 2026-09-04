@@ -642,17 +642,17 @@ export default function ClientDetailPage({
 
   return (
     <div className="min-h-screen" style={{ background: "#1a2e2a" }}>
-      <section className="pt-28 pb-8 px-6" style={{ background: "linear-gradient(180deg, #1f3a35 0%, #1a2e2a 100%)" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
+      <section className="pt-24 pb-5 px-6" style={{ background: "linear-gradient(180deg, #1f3a35 0%, #1a2e2a 100%)" }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-3">
             <Link href="/clients" className="text-sm font-medium flex items-center gap-1 transition-colors" style={{ color: "#6b8e7f" }}>
               <ArrowLeft className="w-4 h-4" /> Back to Clients
             </Link>
           </div>
           <div className="flex items-end justify-between">
             <div>
-              <h1 className="text-3xl font-extrabold mb-1" style={{ color: "#f5f5f0", letterSpacing: "-0.5px" }}>{client.name}</h1>
-              <p className="text-base" style={{ color: "#a8a89d" }}>{client.domain} · {getPackageLabel(client.package)}</p>
+              <h1 className="text-2xl font-extrabold mb-0.5" style={{ color: "#f5f5f0", letterSpacing: "-0.5px" }}>{client.name}</h1>
+              <p className="text-sm" style={{ color: "#a8a89d" }}>{client.domain} · {getPackageLabel(client.package)}</p>
             </div>
             <button
               onClick={() => setShowReport(true)}
@@ -664,8 +664,8 @@ export default function ClientDetailPage({
         </div>
       </section>
 
-      <section className="py-8 px-6">
-        <div className="max-w-5xl mx-auto space-y-6">
+      <section className="py-5 px-6">
+        <div className="max-w-6xl mx-auto space-y-4">
 
           {/* ── Client header ── */}
           <div className="card">
@@ -828,12 +828,12 @@ export default function ClientDetailPage({
           )}
 
           {/* ── Business Brief + Campaign Strategy (two-column when wide) ── */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
             <BusinessBriefPanel
               client={client}
               onUpdate={(brief) => setClient((c) => c ? { ...c, businessBrief: brief } : c)}
             />
-            <div className="space-y-6">
+            <div className="space-y-4">
               <CampaignStrategyPanel
                 client={client}
                 onUpdate={(strategy) => setClient((c) => c ? { ...c, campaignStrategy: strategy } : c)}
@@ -842,13 +842,13 @@ export default function ClientDetailPage({
           </div>
 
           {/* ── Data panels ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <div className="lg:col-span-2 space-y-4">
               <SearchConsolePanel client={client} onConnected={loadClient} />
               <AnalyticsPanel client={client} onConnected={loadClient} />
               <AdsPanel client={client} onConnected={loadClient} />
             </div>
-            <div className="space-y-6">
+            <div className="space-y-4">
               <WeeklySummaryCard clientId={client.id} />
               <SetupChecklistComponent client={client} onUpdate={handleChecklistUpdate} />
             </div>
