@@ -161,6 +161,11 @@ function ServiceDashboardCard({ service, connected }: { service: ServiceKey; con
       { label: "Conversions", value: connected ? "342" : "—", trend: "+23.6%", trendUp: true },
       { label: "ROAS", value: connected ? "4.8x" : "—", trend: "+0.6x", trendUp: true },
     ],
+    meta_ads: [
+      { label: "Ad Spend", value: "—", trend: "", trendUp: true },
+      { label: "Clicks", value: "—", trend: "", trendUp: true },
+      { label: "Conversions", value: "—", trend: "", trendUp: true },
+    ],
   };
 
   return (
@@ -187,9 +192,14 @@ function ServiceDashboardCard({ service, connected }: { service: ServiceKey; con
         ))}
       </div>
 
-      {!connected && (
+      {!connected && service !== 'meta_ads' && (
         <div className="service-dash-locked">
           🔒 Connect Google to unlock live {meta.label} data
+        </div>
+      )}
+      {service === 'meta_ads' && (
+        <div className="service-dash-locked">
+          🔒 Connect Meta to unlock live Facebook &amp; Instagram Ads data
         </div>
       )}
     </div>

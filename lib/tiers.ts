@@ -1,6 +1,6 @@
 // Scramble subscription tiers + service mapping (Herbie 2026-08-31)
 
-export type ServiceKey = 'search_console' | 'analytics' | 'ads'
+export type ServiceKey = 'search_console' | 'analytics' | 'ads' | 'meta_ads'
 export type TierKey = 'seo' | 'ads' | 'full'
 
 export interface Tier {
@@ -22,12 +22,13 @@ export const TIERS: Tier[] = [
     tagline: 'Rankings, traffic & search visibility',
     price: '£149',
     priceNote: 'per month',
-    services: ['search_console', 'analytics'],
+    services: ['search_console', 'analytics', 'meta_ads'],
     features: [
       'Google Search Console dashboard',
       'Keyword rankings & impressions',
       'Google Analytics dashboard',
       'Traffic & conversion insights',
+      'Meta Ads tracking',
       'Weekly automated reports',
     ],
     accent: 'blue',
@@ -38,10 +39,11 @@ export const TIERS: Tier[] = [
     tagline: 'Everything — SEO and paid combined',
     price: '£279',
     priceNote: 'per month',
-    services: ['search_console', 'analytics', 'ads'],
+    services: ['search_console', 'analytics', 'ads', 'meta_ads'],
     features: [
       'Everything in SEO',
       'Everything in Ads',
+      'Meta Ads tracking',
       'Unified cross-channel view',
       'Priority automated reports',
       'Full marketing intelligence',
@@ -55,9 +57,10 @@ export const TIERS: Tier[] = [
     tagline: 'Campaign spend, conversions & ROAS',
     price: '£149',
     priceNote: 'per month',
-    services: ['ads'],
+    services: ['ads', 'meta_ads'],
     features: [
       'Google Ads dashboard',
+      'Meta Ads dashboard',
       'Campaign performance tracking',
       'Spend & conversion monitoring',
       'ROAS & CPA insights',
@@ -90,5 +93,10 @@ export const SERVICE_META: Record<ServiceKey, { label: string; icon: string; des
     label: 'Google Ads',
     icon: '💰',
     desc: 'Campaign spend & conversions',
+  },
+  meta_ads: {
+    label: 'Meta Ads',
+    icon: '📘',
+    desc: 'Facebook & Instagram ad performance',
   },
 }
