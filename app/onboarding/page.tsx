@@ -15,8 +15,10 @@ function OnboardingInner() {
   const [tier, setTier] = useState<TierKey>("full");
   const [services, setServices] = useState<ServiceKey[]>([]);
   const [googleConnected, setGoogleConnected] = useState(false);
+  const [metaConnected, setMetaConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
+  const [connectingMeta, setConnectingMeta] = useState(false);
   const [oauthError, setOauthError] = useState("");
 
   useEffect(() => {
@@ -136,16 +138,21 @@ function OnboardingInner() {
         <div className="onboard-steps">
           <div className="onboard-step done">
             <div className="onboard-step-circle">✓</div>
-            <span>Account created</span>
+            <span>Account</span>
           </div>
           <div className="onboard-step-bar" />
           <div className={`onboard-step ${googleConnected ? "done" : "active"}`}>
             <div className="onboard-step-circle">{googleConnected ? "✓" : "2"}</div>
-            <span>Connect Google</span>
+            <span>Google</span>
           </div>
           <div className="onboard-step-bar" />
-          <div className={`onboard-step ${googleConnected ? "active" : ""}`}>
-            <div className="onboard-step-circle">3</div>
+          <div className={`onboard-step ${googleConnected ? (metaConnected ? "done" : "active") : ""}`}>
+            <div className="onboard-step-circle">{metaConnected ? "✓" : "3"}</div>
+            <span>Meta</span>
+          </div>
+          <div className="onboard-step-bar" />
+          <div className={`onboard-step ${googleConnected && metaConnected ? "active" : ""}`}>
+            <div className="onboard-step-circle">4</div>
             <span>Done</span>
           </div>
         </div>
@@ -199,14 +206,66 @@ function OnboardingInner() {
 
               {oauthError && <div className="sc-error" style={{ marginBottom: 20 }}>{oauthError}</div>}
 
-              {googleConnected ? (
+              {googleConnected && metaConnected ? (
                 <>
-                  <div className="sc-success" style={{ marginBottom: 20 }}>
+                  <div className="sc-success" style={{ marginBottom: 16 }}>
                     ✓ Google account connected successfully!
+                  </div>
+                  <div className="sc-success" style={{ marginBottom: 20 }}>
+                    ✓ Meta Ads account connected successfully!
                   </div>
                   <button onClick={handleFinish} className="sc-btn-primary">
                     Go to my dashboard →
                   </button>
+                </>  
+              ) : googleConnected && !metaConnected ? (
+                <>
+                  <div className="sc-success" style={{ marginBottom: 20 }}>
+                    ✓ Google account connected successfully!
+                  </div>
+                  <div style={{ borderTop: "1px solid rgba(122, 178, 255, 0.15)", paddingTop: 24, marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: "#16243a" }}>Now connect Meta Ads</h2>
+                    <p style={{ fontSize: 14, color: "#5a6b82", lineHeight: 1.6, marginBottom: 20 }}>
+                      Connect your Facebook / Instagram Ads account so we can track ad spend, clicks, conversions, and ROAS across Meta platforms.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setConnectingMeta(true);
+                        // Meta OAuth — will redirect when META_APP_ID is configured
+                        fetch("/api/auth/meta/initiate", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ clientId: email }),
+                        })
+                          .then((r) => r.json())
+                          .then((d) => {
+                            if (d.authUrl) window.location.href = d.authUrl;
+                            else {
+                              setOauthError(d.error || "Could not start Meta connection.");
+                              setConnectingMeta(false);
+                            }
+                          })
+                          .catch(() => {
+                            setOauthError("Could not start Meta connection.");
+                            setConnectingMeta(false);
+                          });
+                      }}
+                      className="sc-btn-meta"
+                      disabled={connectingMeta}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" fill="#1877F2" />
+                      </svg>
+                      {connectingMeta ? "Opening Meta..." : "Connect Meta Ads Account"}
+                    </button>
+                    <button
+                      onClick={() => setMetaConnected(true)}
+                      className="sc-btn-skip"
+                      style={{ display: "block", margin: "12px auto 0", background: "none", border: "none", color: "#8a97ab", fontSize: 13, cursor: "pointer", textDecoration: "underline" }}
+                    >
+                      Skip for now
+                    </button>
+                  </div>
                 </>
               ) : (
                 <button onClick={handleConnectGoogle} className="sc-btn-google" disabled={connecting}>
@@ -278,6 +337,16 @@ const onboardingStyles = `
   .onboard-service-name { font-size: 15px; font-weight: 700; color: #16243a; }
   .onboard-service-desc { font-size: 13px; color: #8a97ab; }
 
+  .sc-btn-meta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 14px 24px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    background: #1877F2; color: white; border: none;
+    box-shadow: 0 4px 14px rgba(24, 119, 242, 0.3);
+    transition: all 0.2s;
+  }
+  .sc-btn-meta:hover { background: #1565C0; }
+  .sc-btn-meta:disabled { opacity: 0.6; cursor: not-allowed; }
   .onboard-secure { text-align: center; margin-top: 20px; font-size: 13px; color: #8a97ab; }
 
   @media (max-width: 500px) {
